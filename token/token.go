@@ -34,3 +34,19 @@ type Token struct {
 	Type    TokenType
 	Literal string
 }
+
+// distingusih user-defined identifiers apart from language keyword
+// assign one type to another -> maps DS
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+// checks the keywords map to see whether
+// the given identifier is in fact a keyword
+func LookupIdent(ident string) TokenType {
+	if tok, ok := keywords[ident]; ok {
+		return tok
+	}
+	return IDENT
+}
