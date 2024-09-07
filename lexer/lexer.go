@@ -1,7 +1,6 @@
 package lexer
 
 import (
-	"fmt"
 	"main/token"
 )
 
@@ -27,7 +26,7 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
-	fmt.Printf("Current char: %q\n", l.ch)
+	//fmt.Printf("Current char: %q\n", l.ch)
 }
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
