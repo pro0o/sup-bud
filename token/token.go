@@ -1,7 +1,5 @@
 package token
 
-import "go/token"
-
 type TokenType string
 
 // token tyeps
@@ -62,18 +60,6 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
-// distingusih user-defined identifiers apart from language keyword
-// assign one type to another -> maps DS
-var keywords = map[string]TokenType{
-	"fn":     FUNCTION,
-	"let":    LET,
-	"true":   TRUE,
-	"false":  FALSE,
-	"if":     IF,
-	"else":   ELSE,
-	"return": RETURN,
-}
-
 // checks the keywords map to see whether
 // the given identifier is in fact a keyword
 func LookupIdent(ident string) TokenType {
@@ -81,24 +67,4 @@ func LookupIdent(ident string) TokenType {
 		return tok
 	}
 	return IDENT
-}
-
-// name of the variable
-type Identifier struct {
-	Token token.Token // token.IDENT in question
-	Value string
-}
-
-func (i *Identifier) expressionNode()      {}
-func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
-
-// statement nodes
-func (ls *LetStatement) statementNode()       {}
-func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
-
-// parsing a let statement
-type LetStatement struct {
-	Token token.Token // the token.LET in question.
-	Name  *Identifier
-	Value Expression // evaluated value
 }
