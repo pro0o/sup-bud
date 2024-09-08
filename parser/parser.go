@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"main/ast"
 	"main/lexer"
 	"main/token"
@@ -11,10 +12,14 @@ type Parser struct {
 
 	curToken  token.Token
 	peekToken token.Token
+	errors    []string
 }
 
 func New(lex *lexer.Lexer) *Parser {
-	p := &Parser{l: *lex}
+	p := &Parser{
+		l:      *lex,
+		errors: []string{}, // slices of string
+	}
 
 	// fill in cur and peek token
 	p.nextToken()
@@ -26,6 +31,35 @@ func New(lex *lexer.Lexer) *Parser {
 func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
+}
+
+func (p *Parser) curTokenIs(t token.TokenType) bool {
+	return p.curToken.Type == t
+}
+
+func (p *Parser) peekTokenIs(t token.TokenType) bool {
+	return p.peekToken.Type == t
+}
+
+func (p *Parser) expectPeek(t token.TokenType) bool {
+	if p.peekTokenIs(t) {
+		// set current token to peek and peek -> next
+		p.nextToken()
+		return true
+	} else {
+		p.peekError(t)
+		return false
+	}
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
+		t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) ParseProgram() *ast.Program {
@@ -46,6 +80,8 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case token.LET:
 		return p.parseLetStatement()
+	case token.RETURN:
+		return p.parseReturnStatement()
 	default:
 		return nil
 	}
@@ -71,20 +107,14 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	return stmt
 }
 
-func (p *Parser) curTokenIs(t token.TokenType) bool {
-	return p.curToken.Type == t
-}
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
+	stmt := &ast.ReturnStatement{Token: p.curToken}
+	p.nextToken()
 
-func (p *Parser) peekTokenIs(t token.TokenType) bool {
-	return p.peekToken.Type == t
-}
-
-func (p *Parser) expectPeek(t token.TokenType) bool {
-	if p.peekTokenIs(t) {
-		// set current token to peek and peek -> next
+	// TODO: skipping the expressions [eval]
+	// until encountering a semicolon
+	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
-		return true
-	} else {
-		return false
 	}
+	return stmt
 }

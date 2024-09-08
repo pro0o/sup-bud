@@ -52,3 +52,11 @@ type LetStatement struct {
 	Name  *Identifier
 	Value Expression // evaluated value
 }
+
+type ReturnStatement struct {
+	Token       token.Token // return token type
+	ReturnValue Expression
+}
+
+func (rs *ReturnStatement) statementNode()       {}
+func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
