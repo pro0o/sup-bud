@@ -6,8 +6,18 @@ import (
 	"os"
 )
 
+const ascii_image = ` ██╗      █████╗ ██╗   ██╗██████╗ ███████╗    ██╗      █████╗ ███╗   ██╗ ██████╗ 
+██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝    ██║     ██╔══██╗████╗  ██║██╔════╝ 
+██║     ███████║██║   ██║██║  ██║█████╗      ██║     ███████║██╔██╗ ██║██║  ███╗
+██║     ██╔══██║╚██╗ ██╔╝██║  ██║██╔══╝      ██║     ██╔══██║██║╚██╗██║██║   ██║
+███████╗██║  ██║ ╚████╔╝ ██████╔╝███████╗    ███████╗██║  ██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═════╝ ╚══════╝    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+                                                                                `
+
 func main() {
-	fmt.Printf("hello patlu, this is paltu programming langtang! \n")
-	fmt.Printf("type-in any cmds \n")
+	// fmt.Printf("Hello patlu, this is Lavde-lang!!! \n")
+	fmt.Printf(ascii_image)
+	fmt.Printf("\n")
+	fmt.Printf("Type-in any cmds: \n")
 	repl.Start(os.Stdin, os.Stdout)
 }
