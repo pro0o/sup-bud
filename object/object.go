@@ -3,7 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
-	"main/ast"
+	"olaf/ast"
 	"strings"
 )
 

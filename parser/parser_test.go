@@ -2,17 +2,17 @@ package parser
 
 import (
 	"fmt"
-	"main/ast"
-	"main/lexer"
+	"olaf/ast"
+	"olaf/lexer"
 	"testing"
 )
 
 func TestLetStatement(t *testing.T) {
 
 	input := `
-	let x = 5;
-	let y = 10;
-	let foo = 47;
+	olaf x = 5;
+	olaf y = 10;
+	olaf foo = 47;
 	`
 	// init
 	l := lexer.New(input)
@@ -45,13 +45,13 @@ func TestLetStatement(t *testing.T) {
 
 func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	/*
-		if s.TokenLiteral() != "let" {
-			t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
+		if s.TokenLiteral() != "olaf" {
+			t.Errorf("s.TokenLiteral not 'olaf'. got=%q", s.TokenLiteral())
 			return false
 		}
 	*/
 
-	// type assertion on whether the interface holds the let stmt type
+	// type assertion on whether the interface holds the olaf stmt type
 	letStmt, ok := s.(*ast.LetStatement)
 	if !ok {
 		t.Errorf("s not *ast.LetStatement. got=%T", s)
@@ -75,9 +75,9 @@ func TestLetStatements(t *testing.T) {
 		expectedIdentifier string
 		expectedValue      interface{}
 	}{
-		{"let x = 5;", "x", 5},
-		{"let y = true;", "y", true},
-		{"let foobar = y;", "foobar", "y"},
+		{"olaf x = 5;", "x", 5},
+		{"olaf y = true;", "y", true},
+		{"olaf foobar = y;", "foobar", "y"},
 	}
 	for _, tt := range tests {
 		l := lexer.New(tt.input)

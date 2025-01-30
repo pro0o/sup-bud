@@ -1,9 +1,9 @@
 package eval
 
 import (
-	"main/lexer"
-	"main/object"
-	"main/parser"
+	"olaf/lexer"
+	"olaf/object"
+	"olaf/parser"
 	"testing"
 )
 
@@ -248,10 +248,10 @@ func TestLetStatements(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let a = 5; a;", 5},
-		{"let a = 5 * 5; a;", 25},
-		{"let a = 5; let b = a; b;", 5},
-		{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+		{"olaf a = 5; a;", 5},
+		{"olaf a = 5 * 5; a;", 25},
+		{"olaf a = 5; olaf b = a; b;", 5},
+		{"olaf a = 5; olaf b = a; olaf c = a + b + 5; c;", 15},
 	}
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
@@ -283,11 +283,11 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let identity = fn(x) { x; }; identity(5);", 5},
-		{"let identity = fn(x) { return x; }; identity(5);", 5},
-		{"let double = fn(x) { x * 2; }; double(5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"olaf identity = fn(x) { x; }; identity(5);", 5},
+		{"olaf identity = fn(x) { return x; }; identity(5);", 5},
+		{"olaf double = fn(x) { x * 2; }; double(5);", 10},
+		{"olaf add = fn(x, y) { x + y; }; add(5, 5);", 10},
+		{"olaf add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"fn(x) { x; }(5)", 5},
 	}
 	for _, tt := range tests {
@@ -297,10 +297,10 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	let newAdder = fn(x) {
+	olaf newAdder = fn(x) {
 	fn(y) { x + y };
 	};
-	let addTwo = newAdder(2);
+	olaf addTwo = newAdder(2);
 	addTwo(2);`
 	testIntegerObject(t, testEval(input), 4)
 }

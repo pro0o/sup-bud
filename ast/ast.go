@@ -2,7 +2,7 @@ package ast
 
 import (
 	"bytes"
-	"main/token"
+	"olaf/token"
 	"strings"
 )
 
@@ -56,7 +56,7 @@ func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 func (i *Identifier) String() string { return i.Value }
 
-// let statement
+// olaf statement
 type LetStatement struct {
 	Token token.Token // the token.LET in question.
 	Name  *Identifier

@@ -2,8 +2,8 @@ package eval
 
 import (
 	"fmt"
-	"main/ast"
-	"main/object"
+	"olaf/ast"
+	"olaf/object"
 )
 
 var (

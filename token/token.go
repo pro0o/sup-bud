@@ -52,7 +52,7 @@ type Token struct {
 // assign one type to another -> maps DS
 var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
-	"let":    LET,
+	"olaf":   LET,
 	"true":   TRUE,
 	"false":  FALSE,
 	"if":     IF,

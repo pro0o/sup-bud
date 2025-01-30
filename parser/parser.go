@@ -2,10 +2,11 @@ package parser
 
 import (
 	"fmt"
-	"main/ast"
-	"main/lexer"
-	"main/token"
+	"olaf/ast"
+	"olaf/lexer"
+	"olaf/token"
 	"strconv"
+	"strings"
 )
 
 type Parser struct {
@@ -17,6 +18,8 @@ type Parser struct {
 
 	prefixParseFns map[token.TokenType]prefixParseFn //nuds <- null denotations
 	infixParseFns  map[token.TokenType]infixParseFn  //leds <- left denotations
+	debugMode      bool                              // New field for enabling debug output
+	depth          int
 }
 
 type (
@@ -54,6 +57,16 @@ var precedences = map[token.TokenType]int{
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
 	token.LPAREN:   CALL,
+}
+
+// Add new method to enable/disable debug mode
+func (p *Parser) SetDebugMode(enabled bool) {
+	p.debugMode = enabled
+}
+
+// Add helper for indentation
+func (p *Parser) indent() string {
+	return strings.Repeat("  ", p.depth)
 }
 
 func New(lex *lexer.Lexer) *Parser {
@@ -130,18 +143,34 @@ func (p *Parser) peekError(t token.TokenType) {
 		t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
 }
-
 func (p *Parser) ParseProgram() *ast.Program {
+	if p.debugMode {
+		fmt.Println("Starting program parse")
+	}
+
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
 	for p.curToken.Type != token.EOF {
+		if p.debugMode {
+			fmt.Printf("%sToken: %s (%s)\n", p.indent(), p.curToken.Type, p.curToken.Literal)
+		}
+
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
+			if p.debugMode {
+				fmt.Printf("%sStatement AST: %s\n", p.indent(), stmt.String())
+			}
 		}
 		p.nextToken()
 	}
+
+	if p.debugMode {
+		fmt.Println("\nFull Program AST:")
+		fmt.Println(program.String())
+	}
+
 	return program
 }
 
