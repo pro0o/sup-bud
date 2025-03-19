@@ -4,104 +4,433 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Olaf Language Interpreter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        olaf: {
-                            primary: '#2563eb',
-                            secondary: '#1e40af',
-                            accent: '#3b82f6',
-                            light: '#dbeafe',
-                            dark: '#1e3a8a'
-                        }
-                    }
-                }
+    <style>
+        :root {
+            --main-bg: #ffffff;
+            --border-color: #000000;
+            --secondary-bg: #f0f0f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: var(--main-bg);
+            padding: 0;
+            margin: 0;
+            line-height: 1.5;
+            color: var(--border-color);
+            overflow-x: hidden;
+        }
+        
+        header {
+            position: relative;
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border-bottom: 20px solid black;
+        }
+        
+        h1 {
+            font-size: 8rem;
+            text-transform: uppercase;
+            letter-spacing: -8px;
+            font-weight: 900;
+            line-height: 0.8;
+            transform: scaleY(1.2);
+            margin-left: -5px;
+        }
+        
+        .header-subtitle {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-top: -10px;
+            margin-left: 50px;
+            font-weight: bold;
+            transform: skew(-10deg);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 2rem;
+            position: relative;
+        }
+        
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 4rem;
+                letter-spacing: -4px;
+            }
+            
+            .header-subtitle {
+                margin-left: 20px;
+                font-size: 1.2rem;
             }
         }
-    </script>
+        
+        .editor-box {
+            border: 8px solid var(--border-color);
+            padding: 1.5rem;
+            background-color: white;
+            position: relative;
+            transform: rotate(-0.5deg);
+        }
+        
+        .output-box {
+            border: 8px solid var(--border-color);
+            padding: 1.5rem;
+            background-color: white;
+            position: relative;
+            transform: rotate(0.5deg);
+        }
+        
+        .editor-label {
+            font-size: 2rem; 
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            background: black;
+            color: white;
+            padding: 5px 15px;
+            font-weight: bold;
+            transform: skew(-10deg);
+            pointer-events: none; /* Ensure this doesn't block clicks */
+        }
+        
+        .output-label {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            background: black;
+            color: white;
+            padding: 5px 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transform: skew(10deg);
+            pointer-events: none; /* Ensure this doesn't block clicks */
+        }
+        
+        textarea, pre {
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            border: 3px solid var(--border-color);
+            padding: 1rem;
+            font-size: 1rem;
+            background-color: var(--secondary-bg);
+            margin-top: 10px;
+        }
+        
+        textarea {
+            min-height: 300px;
+            resize: vertical;
+            cursor: text !important; /* Force text cursor */
+            caret-color: black; /* Ensure visible caret */
+            position: relative; /* Ensure it's above other elements */
+            z-index: 2; /* Higher z-index to ensure it's clickable */
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--border-color);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        pre {
+            min-height: 300px;
+            overflow-x: auto;
+            position: relative;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        pre::before {
+            content: "OUTPUT";
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: black;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 5px;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        button {
+            background-color: white;
+            border: 3px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        button:hover {
+            background-color: var(--border-color);
+            color: white;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .run-button {
+            background-color: var(--border-color);
+            color: white;
+            transform: skew(-10deg);
+        }
+        
+        .clear-button {
+            transform: skew(10deg);
+        }
+        
+        .examples-container {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            position: relative;
+            padding-top: 1.5rem;
+        }
+        
+        .examples-container::before {
+            content: "EXAMPLES";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) skew(-5deg);
+            background: black;
+            color: white;
+            padding: 5px 20px;
+            font-weight: bold;
+            font-size: 1.5rem;
+            pointer-events: none; /* Ensure this doesn't block clicks */
+        }
+        
+        .example-button {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 1rem;
+            border: 3px solid var(--border-color);
+            background-color: white;
+            cursor: pointer;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            transform: skew(-5deg);
+            transition: all 0.2s ease;
+        }
+        
+        .example-button:nth-child(even) {
+            transform: skew(5deg);
+        }
+        
+        .example-button:hover {
+            background-color: var(--border-color);
+            color: white;
+            transform: skew(-5deg) translateY(-5px);
+            box-shadow: 8px 13px 0 rgba(0,0,0,0.1);
+        }
+
+        .example-button:nth-child(even):hover {
+            transform: skew(5deg) translateY(-5px);
+            box-shadow: -8px 13px 0 rgba(0,0,0,0.1);
+        }
+        
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.05;
+            pointer-events: none; /* Ensure this doesn't block clicks */
+            z-index: 1000;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none; /* Ensure this doesn't block clicks */
+            z-index: -1;
+        }
+        
+        .loading {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-content {
+            background-color: white;
+            padding: 2rem;
+            border: 5px solid black;
+            text-align: center;
+            transform: rotate(-1deg);
+        }
+        
+        .loading-content h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-message {
+            background-color: #ffdddd;
+            border: 3px solid #ff0000;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .error-message.visible {
+            display: block;
+        }
+        
+        /* Keyboard shortcut hint */
+        .shortcut-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2px 5px;
+            border-radius: 3px;
+            pointer-events: none; /* Ensure this doesn't block clicks */
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div id="app" class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Header Component -->
-        <header class="mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">Olaf Language Interpreter</h1>
-            <p class="text-gray-600">Write and execute Olaf code directly in your browser</p>
+<body>
+    <div class="noise"></div>
+    <div class="grid-lines"></div>
+    
+    <div id="loading" class="loading">
+        <div class="loading-content">
+            <h2>LOADING OLAF</h2>
+            <p>Initializing WASM interpreter...</p>
+        </div>
+    </div>
+    
+    <div id="error-message" class="error-message">
+        <strong>Error:</strong> <span id="error-text"></span>
+    </div>
+    
+    <div id="app">
+        <header>
+            <h1>OLAF</h1>
+            <div class="header-subtitle">Toy Language</div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Editor Component -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Code Editor</h2>
-                    <textarea id="code-input" class="w-full h-64 font-mono p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-olaf-accent focus:border-olaf-accent resize-y mb-4" placeholder="Write your Olaf code here...">let x = 10;
-let y = 15;
-let add = fn(a, b) { a + b };
+        <div class="container">
+            <div class="layout">
+                <div class="editor-box">
+                    <div class="editor-label">CODE</div>
+                    <textarea id="code-input" placeholder="Write your Olaf code here..." spellcheck="false">olaf x = 10;
+olaf y = 15;
+olaf add = fn(a, b) { a + b };
 add(x, y);</textarea>
                     
-                    <div class="flex space-x-4">
-                        <button id="run-button" class="bg-olaf-primary hover:bg-olaf-secondary text-white font-medium py-2 px-6 rounded-md transition-colors">
-                            <span class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                                </svg>
-                                Run Code
-                            </span>
+                    <div class="button-container">
+                        <button id="run-button" class="run-button" disabled>
+                            EXECUTE
                         </button>
-                        <button id="clear-button" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-6 rounded-md transition-colors">
-                            <span class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                                Clear
-                            </span>
+                        <button id="clear-button" class="clear-button" disabled>
+                            CLEAR
                         </button>
                     </div>
+                    <div class="shortcut-hint">Ctrl/Cmd + Enter to run</div>
                 </div>
 
-                <!-- Output Component -->
-                <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Output</h2>
-                    <pre id="output" class="w-full min-h-32 bg-gray-100 p-4 rounded-md font-mono text-sm overflow-x-auto">// Result will appear here</pre>
+                <div class="output-box">
+                    <div class="output-label">Output</div>
+                    <pre id="output">// Output will appear here</pre>
                 </div>
-            </div>
-
-            <!-- Examples Component -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Examples</h2>
-                    <div class="space-y-4">
-                        <div class="code-example bg-olaf-light hover:bg-blue-100 p-4 rounded-md cursor-pointer transition-colors" data-code="let x = 10;
-let y = 15;
-let add = fn(a, b) { a + b };
-add(x, y);">
-                            <h3 class="font-medium text-olaf-dark">Basic Addition</h3>
-                            <p class="text-sm text-gray-600">Define variables and a function to add them.</p>
-                        </div>
-                        
-                        <div class="code-example bg-olaf-light hover:bg-blue-100 p-4 rounded-md cursor-pointer transition-colors" data-code="let factorial = fn(n) {
+                
+                <div class="examples-container">
+                    <div class="example-button code-example" data-code="olaf x = 10;
+olaf y = 15;
+olaf add = fn(a, b) { a + b };
+add(x, y);">ADDITION</div>
+                    
+                    <div class="example-button code-example" data-code="olaf factorial = fn(n) {
   if (n == 0) {
     return 1;
   } else {
     return n * factorial(n - 1);
   }
 };
-factorial(5);">
-                            <h3 class="font-medium text-olaf-dark">Factorial</h3>
-                            <p class="text-sm text-gray-600">Calculate factorial with recursion.</p>
-                        </div>
-                        
-                        <div class="code-example bg-olaf-light hover:bg-blue-100 p-4 rounded-md cursor-pointer transition-colors" data-code="let a = 5;
-let b = 10;
-let c = if (a > b) { a } else { b };
-c;">
-                            <h3 class="font-medium text-olaf-dark">If Expression</h3>
-                            <p class="text-sm text-gray-600">Using if as an expression.</p>
-                        </div>
-                        
-                        <div class="code-example bg-olaf-light hover:bg-blue-100 p-4 rounded-md cursor-pointer transition-colors" data-code="let fibonacci = fn(n) {
+factorial(5);">FACTORIAL</div>
+                    
+                    <div class="example-button code-example" data-code="olaf a = 5;
+olaf b = 10;
+olaf c = if (a > b) { a } else { b };
+c;">IF EXPRESSION</div>
+                    
+                    <div class="example-button code-example" data-code="olaf fibonacci = fn(n) {
   if (n == 0) {
     return 0;
   } else {
@@ -112,36 +441,16 @@ c;">
     }
   }
 };
-fibonacci(10);">
-                            <h3 class="font-medium text-olaf-dark">Fibonacci</h3>
-                            <p class="text-sm text-gray-600">Calculate the 10th Fibonacci number.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Info Component -->
-                <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">About Olaf</h2>
-                    <div class="text-sm text-gray-600">
-                        <p class="mb-2">Olaf is a simple programming language with support for:</p>
-                        <ul class="list-disc pl-5 space-y-1">
-                            <li>Integer arithmetic</li>
-                            <li>Boolean operations</li>
-                            <li>Variables and functions</li>
-                            <li>Conditional expressions</li>
-                            <li>Recursion</li>
-                        </ul>
-                    </div>
+fibonacci(10);">FIBONACCI</div>
                 </div>
             </div>
         </div>
-
-        <!-- Footer Component -->
-        <footer class="mt-12 text-center text-gray-500 text-sm">
-            <p>Olaf Language Interpreter - Powered by Go WebAssembly</p>
+        
+        <footer>
+            Olaf Language Interpreter - A WebAssembly-powered toy language
         </footer>
     </div>
-
+    
     <script src="js/wasm_exec.js"></script>
     <script src="js/app.js"></script>
 </body>

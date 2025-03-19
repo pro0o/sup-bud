@@ -2,40 +2,41 @@ package token
 
 type TokenType string
 
-// token tyeps
+type Token struct {
+	Type     TokenType
+	Literal  string
+	Position int
+}
+
 const (
-	ILLEGAL = "ILLEGAL" // any token out of scope/ not defined by me.
+	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	// identifiers
 	IDENT = "IDENT"
 	INT   = "INT"
 
-	// operators
 	ASSIGN   = "="
 	PLUS     = "+"
 	MINUS    = "-"
 	BANG     = "!"
 	ASTERISK = "*"
 	SLASH    = "/"
-	LT       = "<"
-	GT       = ">"
-	EQ       = "=="
-	NOT_EQ   = "!="
 
-	// delimiters: separation between data streams
+	LT     = "<"
+	GT     = ">"
+	EQ     = "=="
+	NOT_EQ = "!="
+
 	COMMA     = ","
 	SEMICOLON = ";"
 
-	// parenthesis
 	LPAREN = "("
 	RPAREN = ")"
 	LBRACE = "{"
 	RBRACE = "}"
 
-	// keywords
 	FUNCTION = "FUNCTION"
-	LET      = "LET"
+	LET      = "OLAF"
 	TRUE     = "TRUE"
 	FALSE    = "FALSE"
 	IF       = "IF"
@@ -43,13 +44,6 @@ const (
 	RETURN   = "RETURN"
 )
 
-type Token struct {
-	Type    TokenType
-	Literal string
-}
-
-// distingusih user-defined identifiers apart from language keyword
-// assign one type to another -> maps DS
 var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
 	"olaf":   LET,
@@ -60,8 +54,6 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
-// checks the keywords map to see whether
-// the given identifier is in fact a keyword
 func LookupIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok

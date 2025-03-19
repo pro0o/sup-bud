@@ -318,7 +318,6 @@ func newError(format string, a ...interface{}) *object.Error {
 	return &object.Error{Message: fmt.Sprintf(format, a...)}
 }
 
-// ident
 func evalIdentifier(
 	node *ast.Identifier,
 	env *object.Environment) object.Object {
