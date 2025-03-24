@@ -19,8 +19,6 @@ func isError(obj object.Object) bool {
 	return false
 }
 
-// evaluating on fly
-// traverse the ast nodes
 func Eval(node ast.Node, env *object.Environment) object.Object {
 	switch node := node.(type) {
 	// Statements

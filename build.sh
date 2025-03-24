@@ -39,3 +39,5 @@ go build -o olaf-server server.go
 echo -e "${YELLOW}==== Build Complete ====${NC}"
 echo -e "To start the server, run: ${GREEN}./olaf-server${NC}"
 echo -e "Then open ${GREEN}http://localhost:8080${NC} in your browser"
+
+./olaf-server

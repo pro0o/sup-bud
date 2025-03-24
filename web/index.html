@@ -3,434 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olaf Language Interpreter</title>
-    <style>
-        :root {
-            --main-bg: #ffffff;
-            --border-color: #000000;
-            --secondary-bg: #f0f0f0;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Courier New', monospace;
-        }
-        
-        body {
-            background-color: var(--main-bg);
-            padding: 0;
-            margin: 0;
-            line-height: 1.5;
-            color: var(--border-color);
-            overflow-x: hidden;
-        }
-        
-        header {
-            position: relative;
-            padding: 2rem 1rem;
-            margin-bottom: 2rem;
-            overflow: hidden;
-            border-bottom: 20px solid black;
-        }
-        
-        h1 {
-            font-size: 8rem;
-            text-transform: uppercase;
-            letter-spacing: -8px;
-            font-weight: 900;
-            line-height: 0.8;
-            transform: scaleY(1.2);
-            margin-left: -5px;
-        }
-        
-        .header-subtitle {
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            margin-top: -10px;
-            margin-left: 50px;
-            font-weight: bold;
-            transform: skew(-10deg);
-        }
-        
-        h2 {
-            font-size: 2rem;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-            font-weight: bold;
-            letter-spacing: -1px;
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-        
-        .layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto;
-            gap: 2rem;
-            position: relative;
-        }
-        
-        @media (max-width: 1024px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 4rem;
-                letter-spacing: -4px;
-            }
-            
-            .header-subtitle {
-                margin-left: 20px;
-                font-size: 1.2rem;
-            }
-        }
-        
-        .editor-box {
-            border: 8px solid var(--border-color);
-            padding: 1.5rem;
-            background-color: white;
-            position: relative;
-            transform: rotate(-0.5deg);
-        }
-        
-        .output-box {
-            border: 8px solid var(--border-color);
-            padding: 1.5rem;
-            background-color: white;
-            position: relative;
-            transform: rotate(0.5deg);
-        }
-        
-        .editor-label {
-            font-size: 2rem; 
-            position: absolute;
-            top: -20px;
-            left: 20px;
-            background: black;
-            color: white;
-            padding: 5px 15px;
-            font-weight: bold;
-            transform: skew(-10deg);
-            pointer-events: none; /* Ensure this doesn't block clicks */
-        }
-        
-        .output-label {
-            position: absolute;
-            top: -20px;
-            right: 20px;
-            background: black;
-            color: white;
-            padding: 5px 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            transform: skew(10deg);
-            pointer-events: none; /* Ensure this doesn't block clicks */
-        }
-        
-        textarea, pre {
-            width: 100%;
-            font-family: 'Courier New', monospace;
-            border: 3px solid var(--border-color);
-            padding: 1rem;
-            font-size: 1rem;
-            background-color: var(--secondary-bg);
-            margin-top: 10px;
-        }
-        
-        textarea {
-            min-height: 300px;
-            resize: vertical;
-            cursor: text !important; /* Force text cursor */
-            caret-color: black; /* Ensure visible caret */
-            position: relative; /* Ensure it's above other elements */
-            z-index: 2; /* Higher z-index to ensure it's clickable */
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: var(--border-color);
-            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-        }
-        
-        pre {
-            min-height: 300px;
-            overflow-x: auto;
-            position: relative;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-        
-        pre::before {
-            content: "OUTPUT";
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: black;
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 5px;
-        }
-        
-        .button-container {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        button {
-            background-color: white;
-            border: 3px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s ease;
-        }
-        
-        button:hover {
-            background-color: var(--border-color);
-            color: white;
-        }
-        
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .run-button {
-            background-color: var(--border-color);
-            color: white;
-            transform: skew(-10deg);
-        }
-        
-        .clear-button {
-            transform: skew(10deg);
-        }
-        
-        .examples-container {
-            grid-column: 1 / -1;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 2rem;
-            position: relative;
-            padding-top: 1.5rem;
-        }
-        
-        .examples-container::before {
-            content: "EXAMPLES";
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%) skew(-5deg);
-            background: black;
-            color: white;
-            padding: 5px 20px;
-            font-weight: bold;
-            font-size: 1.5rem;
-            pointer-events: none; /* Ensure this doesn't block clicks */
-        }
-        
-        .example-button {
-            flex: 1;
-            min-width: 150px;
-            text-align: center;
-            padding: 1rem;
-            border: 3px solid var(--border-color);
-            background-color: white;
-            cursor: pointer;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-            transform: skew(-5deg);
-            transition: all 0.2s ease;
-        }
-        
-        .example-button:nth-child(even) {
-            transform: skew(5deg);
-        }
-        
-        .example-button:hover {
-            background-color: var(--border-color);
-            color: white;
-            transform: skew(-5deg) translateY(-5px);
-            box-shadow: 8px 13px 0 rgba(0,0,0,0.1);
-        }
-
-        .example-button:nth-child(even):hover {
-            transform: skew(5deg) translateY(-5px);
-            box-shadow: -8px 13px 0 rgba(0,0,0,0.1);
-        }
-        
-        .noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.05;
-            pointer-events: none; /* Ensure this doesn't block clicks */
-            z-index: 1000;
-        }
-        
-        .grid-lines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            pointer-events: none; /* Ensure this doesn't block clicks */
-            z-index: -1;
-        }
-        
-        .loading {
-            display: flex;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .loading-content {
-            background-color: white;
-            padding: 2rem;
-            border: 5px solid black;
-            text-align: center;
-            transform: rotate(-1deg);
-        }
-        
-        .loading-content h2 {
-            margin-bottom: 1rem;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .error-message {
-            background-color: #ffdddd;
-            border: 3px solid #ff0000;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        
-        .error-message.visible {
-            display: block;
-        }
-        
-        /* Keyboard shortcut hint */
-        .shortcut-hint {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.8rem;
-            color: #666;
-            background: rgba(255, 255, 255, 0.7);
-            padding: 2px 5px;
-            border-radius: 3px;
-            pointer-events: none; /* Ensure this doesn't block clicks */
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 2rem;
-            border-top: 1px solid #eee;
-            font-size: 0.9rem;
-            color: #666;
-        }
-    </style>
+    <title>Olaf Terminal Interpreter</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="noise"></div>
-    <div class="grid-lines"></div>
-    
     <div id="loading" class="loading">
         <div class="loading-content">
-            <h2>LOADING OLAF</h2>
-            <p>Initializing WASM interpreter...</p>
+            <div class="terminal-header">
+                <div class="terminal-title">INITIALIZING OLAF</div>
+            </div>
+            <div class="loading-text">
+                <span class="typed-text">Loading WASM interpreter...</span>
+                <span class="cursor"></span>
+            </div>
         </div>
     </div>
     
     <div id="error-message" class="error-message">
-        <strong>Error:</strong> <span id="error-text"></span>
+        <strong>ERROR:</strong> <span id="error-text"></span>
     </div>
     
     <div id="app">
-        <header>
-            <h1>OLAF</h1>
-            <div class="header-subtitle">Toy Language</div>
-        </header>
-
-        <div class="container">
-            <div class="layout">
-                <div class="editor-box">
-                    <div class="editor-label">CODE</div>
-                    <textarea id="code-input" placeholder="Write your Olaf code here..." spellcheck="false">olaf x = 10;
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">OLAF INTERPRETER v1.0</div>
+            </div>
+            
+            <div class="terminal-content">
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <span class="prompt">olaf@terminal:~$</span>
+                        <span class="command">edit</span>
+                    </div>
+                    <textarea id="code-input" spellcheck="false">olaf x = 10;
 olaf y = 15;
 olaf add = fn(a, b) { a + b };
 add(x, y);</textarea>
                     
-                    <div class="button-container">
-                        <button id="run-button" class="run-button" disabled>
-                            EXECUTE
-                        </button>
-                        <button id="clear-button" class="clear-button" disabled>
-                            CLEAR
-                        </button>
-                    </div>
-                    <div class="shortcut-hint">Ctrl/Cmd + Enter to run</div>
-                </div>
-
-                <div class="output-box">
-                    <div class="output-label">Output</div>
-                    <pre id="output">// Output will appear here</pre>
-                </div>
-                
-                <div class="examples-container">
-                    <div class="example-button code-example" data-code="olaf x = 10;
+                    <div class="code-snippets">
+                        <button class="snippet-button code-example" data-code="olaf x = 10;
 olaf y = 15;
 olaf add = fn(a, b) { a + b };
-add(x, y);">ADDITION</div>
-                    
-                    <div class="example-button code-example" data-code="olaf factorial = fn(n) {
+add(x, y);">ADDITION</button>
+                        <button class="snippet-button code-example" data-code="olaf factorial = fn(n) {
   if (n == 0) {
     return 1;
   } else {
     return n * factorial(n - 1);
   }
 };
-factorial(5);">FACTORIAL</div>
-                    
-                    <div class="example-button code-example" data-code="olaf a = 5;
+factorial(5);">FACTORIAL</button>
+                        <button class="snippet-button code-example" data-code="olaf a = 5;
 olaf b = 10;
 olaf c = if (a > b) { a } else { b };
-c;">IF EXPRESSION</div>
-                    
-                    <div class="example-button code-example" data-code="olaf fibonacci = fn(n) {
+c;">IF EXPR</button>
+                        <button class="snippet-button code-example" data-code="olaf fibonacci = fn(n) {
   if (n == 0) {
     return 0;
   } else {
@@ -441,17 +68,33 @@ c;">IF EXPRESSION</div>
     }
   }
 };
-fibonacci(10);">FIBONACCI</div>
+fibonacci(10);">FIBONACCI</button>
+                    </div>
+                    
+                    <div class="button-container">
+                        <button id="run-button" class="terminal-button-action" disabled>
+                            <span class="button-icon">▶</span> EXECUTE
+                        </button>
+                        <button id="clear-button" class="terminal-button-action" disabled>
+                            <span class="button-icon">✕</span> CLEAR
+                        </button>
+                    </div>
+                    <div class="shortcut-hint">CTRL+ENTER to execute</div>
+                </div>
+                
+                <div class="output-container">
+                    <div class="output-header">
+                        <span class="prompt">olaf@terminal:~$</span>
+                        <span class="command">run</span>
+                    </div>
+                    <pre id="output" class="terminal-output">// Output will appear here</pre>
                 </div>
             </div>
         </div>
-        
-        <footer>
-            Olaf Language Interpreter - A WebAssembly-powered toy language
-        </footer>
     </div>
     
     <script src="js/wasm_exec.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
+

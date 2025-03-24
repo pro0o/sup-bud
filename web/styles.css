@@ -1,0 +1,345 @@
+:root {
+    /* Default theme - these will be overridden by theme selections */
+    --terminal-bg: #0c0c0c;
+    --terminal-bg-lighter: #1a1a1a;
+    --terminal-border: #333;
+    --terminal-text: #f0f0f0;
+    --terminal-green: #66FF66;
+    --terminal-cyan: #0ff;
+    --terminal-amber: #ffb000;
+    --terminal-magenta: #f0f;
+    --terminal-red: #f55;
+    --terminal-header: #222;
+    --terminal-font: "Courier New", monospace;
+    --terminal-glow: 0 0 10px rgba(0, 255, 0, 0.2);
+    --body-bg: #000;
+    --button-hover-bg: var(--terminal-green);
+    --button-hover-text: #000;
+    --scanline-color: rgba(32, 128, 32, 0.02);
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--terminal-font);
+  }
+  
+  body {
+    background-color: var(--body-bg);
+    color: var(--terminal-text);
+    line-height: 1.5;
+    overflow-x: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Terminal Container */
+  .terminal-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 90vh;
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Terminal Header */
+  .terminal-header {
+    background-color: var(--terminal-header);
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--terminal-border);
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .terminal-title {
+    color: var(--terminal-text);
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  /* Theme Selector */
+  /* Theme Selector Removed */
+  
+  /* Terminal Content */
+  .terminal-content {
+    flex-grow: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media (min-width: 768px) {
+    .terminal-content {
+      flex-direction: row;
+    }
+  }
+  
+  /* Editor and Output */
+  .editor-container,
+  .output-container {
+    padding: 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .editor-header,
+  .output-header {
+    margin-bottom: 10px;
+    color: var(--terminal-amber);
+    font-size: 14px;
+    transition: color 0.3s ease;
+  }
+  
+  .prompt {
+    color: var(--terminal-green);
+    margin-right: 8px;
+    transition: color 0.3s ease;
+  }
+  
+  .command {
+    color: var(--terminal-cyan);
+    transition: color 0.3s ease;
+  }
+  
+  textarea {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: var(--terminal-text);
+    border: 1px solid var(--terminal-border);
+    padding: 10px;
+    font-size: 16px;
+    resize: none;
+    outline: none;
+    caret-color: var(--terminal-green);
+    min-height: 150px;
+    transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  textarea:focus {
+    border-color: var(--terminal-green);
+    box-shadow: var(--terminal-glow);
+  }
+  
+  .terminal-output {
+    flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: var(--terminal-cyan);
+    border: 1px solid var(--terminal-border);
+    padding: 10px;
+    font-size: 16px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 150px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  /* Code Snippets */
+  .code-snippets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .snippet-button {
+    background-color: var(--terminal-bg-lighter);
+    color: var(--terminal-amber);
+    border: 1px solid var(--terminal-border);
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+  }
+  
+  .snippet-button:hover {
+    background-color: var(--terminal-amber);
+    color: black;
+  }
+  
+  /* Buttons */
+  .button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .terminal-button-action {
+    background-color: var(--terminal-bg-lighter);
+    color: var(--terminal-text);
+    border: 1px solid var(--terminal-border);
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+  
+  .terminal-button-action:hover:not(:disabled) {
+    background-color: var(--button-hover-bg);
+    color: var(--button-hover-text);
+  }
+  
+  .terminal-button-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .button-icon {
+    margin-right: 8px;
+  }
+  
+  .shortcut-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    text-align: right;
+    transition: color 0.3s ease;
+  }
+  
+  /* Loading Screen */
+  .loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .loading-content {
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    overflow: hidden;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .loading-text {
+    padding: 30px;
+    text-align: center;
+    color: var(--terminal-green);
+    font-size: 16px;
+    transition: color 0.3s ease;
+  }
+  
+  /* Cursor Animation */
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    background-color: var(--terminal-green);
+    margin-left: 5px;
+    animation: blink 1s infinite;
+    transition: background-color 0.3s ease;
+  }
+  
+  @keyframes blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  /* Error Message */
+  .error-message {
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 1px solid var(--terminal-red);
+    padding: 10px;
+    margin-bottom: 10px;
+    display: none;
+    color: var(--terminal-red);
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .error-message.visible {
+    display: block;
+  }
+  
+  /* Hidden Class */
+  .hidden {
+    display: none;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .terminal-container {
+      height: 95vh;
+    }
+  
+    .code-snippets {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    .snippet-button {
+      font-size: 11px;
+      padding: 4px 6px;
+    }
+  }
+  
+  /* Scan Line Effect */
+  .terminal-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(transparent 0%, var(--scanline-color) 50%, transparent 100%);
+    background-size: 100% 3px;
+    pointer-events: none;
+    animation: scanline 8s linear infinite;
+    opacity: 0.3;
+    z-index: 2;
+  }
+  
+  @keyframes scanline {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 0 100%;
+    }
+  }
+  
+  /* Glow Text Effect */
+  .glow-text {
+    text-shadow: 0 0 3px var(--terminal-green);
+  }
+  
+  
