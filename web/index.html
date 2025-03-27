@@ -1,100 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Olaf Terminal Interpreter</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div id="loading" class="loading">
         <div class="loading-content">
-            <div class="terminal-header">
-                <div class="terminal-title">INITIALIZING OLAF</div>
-            </div>
             <div class="loading-text">
                 <span class="typed-text">Loading WASM interpreter...</span>
                 <span class="cursor"></span>
             </div>
         </div>
     </div>
-    
+
     <div id="error-message" class="error-message">
         <strong>ERROR:</strong> <span id="error-text"></span>
     </div>
-    
+
     <div id="app">
         <div class="terminal-container">
-            <div class="terminal-header">
-                <div class="terminal-title">OLAF INTERPRETER v1.0</div>
-            </div>
-            
             <div class="terminal-content">
                 <div class="editor-container">
                     <div class="editor-header">
-                        <span class="prompt">olaf@terminal:~$</span>
-                        <span class="command">edit</span>
+                        <span class="prompt">olaf@editor:</span>
                     </div>
-                    <textarea id="code-input" spellcheck="false">olaf x = 10;
+                    <textarea id="code-input" spellcheck="false">
+olaf x = 10;
 olaf y = 15;
 olaf add = fn(a, b) { a + b };
-add(x, y);</textarea>
-                    
+add(x, y);
+                    </textarea>
+
                     <div class="code-snippets">
                         <button class="snippet-button code-example" data-code="olaf x = 10;
 olaf y = 15;
 olaf add = fn(a, b) { a + b };
-add(x, y);">ADDITION</button>
+add(x, y);">addition</button>
                         <button class="snippet-button code-example" data-code="olaf factorial = fn(n) {
-  if (n == 0) {
-    return 1;
-  } else {
-    return n * factorial(n - 1);
-  }
+ if (n == 0) {
+ return 1;
+ } else {
+ return n * factorial(n - 1);
+ }
 };
-factorial(5);">FACTORIAL</button>
+factorial(5);">factorial</button>
                         <button class="snippet-button code-example" data-code="olaf a = 5;
 olaf b = 10;
 olaf c = if (a > b) { a } else { b };
-c;">IF EXPR</button>
+c;">if exp</button>
                         <button class="snippet-button code-example" data-code="olaf fibonacci = fn(n) {
-  if (n == 0) {
-    return 0;
-  } else {
-    if (n == 1) {
-      return 1;
-    } else {
-      return fibonacci(n-1) + fibonacci(n-2);
-    }
-  }
+ if (n == 0) {
+ return 0;
+ } else {
+ if (n == 1) {
+ return 1;
+ } else {
+ return fibonacci(n-1) + fibonacci(n-2);
+ }
+ }
 };
-fibonacci(10);">FIBONACCI</button>
+fibonacci(10);">fibonacci</button>
                     </div>
-                    
+
                     <div class="button-container">
                         <button id="run-button" class="terminal-button-action" disabled>
-                            <span class="button-icon">▶</span> EXECUTE
+                            <span class="button-icon">▶</span> Execute
                         </button>
                         <button id="clear-button" class="terminal-button-action" disabled>
-                            <span class="button-icon">✕</span> CLEAR
+                            <span class="button-icon">✕</span> Clear
                         </button>
                     </div>
+
                     <div class="shortcut-hint">CTRL+ENTER to execute</div>
                 </div>
-                
+
                 <div class="output-container">
                     <div class="output-header">
-                        <span class="prompt">olaf@terminal:~$</span>
-                        <span class="command">run</span>
+                        <span class="prompt">olaf@output:</span>
                     </div>
                     <pre id="output" class="terminal-output">// Output will appear here</pre>
                 </div>
             </div>
         </div>
+
+        <footer id="footer" class="footer">
+            <div class="footer-links">
+                <a href="https://github.com/your-github" target="_blank">[gitHub]</a>
+                <a href="https://twitter.com/your-twitter" target="_blank">[twitter]</a>
+            </div>
+        </footer>
     </div>
-    
+
     <script src="js/wasm_exec.js"></script>
     <script src="js/app.js"></script>
 </body>
-</html>
 
+</html>

@@ -1,9 +1,11 @@
 package eval
 
 import (
+	"context"
 	"fmt"
 	"olaf/ast"
 	"olaf/object"
+	"time"
 )
 
 var (
@@ -19,16 +21,66 @@ func isError(obj object.Object) bool {
 	return false
 }
 
-func Eval(node ast.Node, env *object.Environment) object.Object {
+type EvalOptions struct {
+	MaxDepth int
+	Timeout  time.Duration
+}
+
+func EvalWithOptions(node ast.Node, env *object.Environment, opts EvalOptions) object.Object {
+	ctx, cancel := context.WithTimeout(context.Background(), opts.Timeout)
+	defer cancel()
+
+	resultChan := make(chan object.Object, 1)
+	errChan := make(chan error, 1)
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				errChan <- fmt.Errorf("panic during evaluation: %v", r)
+			}
+		}()
+
+		result := evalWithDepthTracking(node, env, opts.MaxDepth)
+		resultChan <- result
+	}()
+
+	select {
+	case result := <-resultChan:
+		return result
+	case err := <-errChan:
+		return newError("Evaluation error: %v", err)
+	case <-ctx.Done():
+		return newError("Evaluation timed out after %v", opts.Timeout)
+	}
+}
+
+func evalWithDepthTracking(node ast.Node, env *object.Environment, maxDepth int) object.Object {
+	if maxDepth <= 0 {
+		return newError("Max recursion depth reached, Slow down brother—")
+	}
+
 	switch node := node.(type) {
-	// Statements
 	case *ast.Program:
-		return evalProgram(node, env)
+		return evalProgramWithDepthTracking(node, env, maxDepth)
 
 	case *ast.ExpressionStatement:
-		return Eval(node.Expression, env)
+		return evalWithDepthTracking(node.Expression, env, maxDepth-1)
 
-	// Expressions
+	case *ast.ReturnStatement:
+		val := evalWithDepthTracking(node.ReturnValue, env, maxDepth-1)
+		if isError(val) {
+			return val
+		}
+		return &object.ReturnValue{Value: val}
+
+	case *ast.LetStatement:
+		val := evalWithDepthTracking(node.Value, env, maxDepth-1)
+		if isError(val) {
+			return val
+		}
+		env.Set(node.Name.Value, val)
+		return nil
+
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
 
@@ -36,44 +88,28 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return nativeBoolToBooleanObject(node.Value)
 
 	case *ast.PrefixExpression:
-		right := Eval(node.Right, env)
+		right := evalWithDepthTracking(node.Right, env, maxDepth-1)
 		if isError(right) {
 			return right
 		}
 		return evalPrefixExpression(node.Operator, right)
 
 	case *ast.InfixExpression:
-		left := Eval(node.Left, env)
+		left := evalWithDepthTracking(node.Left, env, maxDepth-1)
 		if isError(left) {
 			return left
 		}
-		right := Eval(node.Right, env)
+		right := evalWithDepthTracking(node.Right, env, maxDepth-1)
 		if isError(right) {
 			return right
 		}
 		return evalInfixExpression(node.Operator, left, right)
 
 	case *ast.BlockStatement:
-		return evalBlockStatement(node, env)
+		return evalBlockStatementWithDepthTracking(node, env, maxDepth)
 
 	case *ast.IfExpression:
-		return evalIfExpression(node, env)
-
-	// absence of clean gotos in go
-	// thus, passing return value thru eval.
-	case *ast.ReturnStatement:
-		val := Eval(node.ReturnValue, env)
-		if isError(val) {
-			return val
-		}
-		return &object.ReturnValue{Value: val}
-
-	case *ast.LetStatement:
-		val := Eval(node.Value, env)
-		if isError(val) {
-			return val
-		}
-		env.Set(node.Name.Value, val)
+		return evalIfExpressionWithDepthTracking(node, env, maxDepth)
 
 	case *ast.Identifier:
 		return evalIdentifier(node, env)
@@ -84,30 +120,27 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return &object.Function{Parameters: params, Env: env, Body: body}
 
 	case *ast.CallExpression:
-		function := Eval(node.Function, env)
+		function := evalWithDepthTracking(node.Function, env, maxDepth-1)
 		if isError(function) {
 			return function
 		}
-		args := evalExpressions(node.Arguments, env)
+		args := evalExpressionsWithDepthTracking(node.Arguments, env, maxDepth-1)
 		if len(args) == 1 && isError(args[0]) {
 			return args[0]
 		}
-		return applyFunction(function, args)
+		return applyFunctionWithDepthTracking(function, args, maxDepth-1)
+
+	default:
+		return nil
 	}
-	return nil
 }
 
-// program <- []stmts
-func evalProgram(program *ast.Program, env *object.Environment) object.Object {
+func evalProgramWithDepthTracking(program *ast.Program, env *object.Environment, maxDepth int) object.Object {
 	var result object.Object
 	for _, statement := range program.Statements {
-		result = Eval(statement, env)
+		result = evalWithDepthTracking(statement, env, maxDepth-1)
 		switch result := result.(type) {
-		// Whenever a return is encountered
-		// wrap the value it’s supposed to return inside an obj,
-		// so to keep track of it.
 		case *object.ReturnValue:
-			// return only the value it’s wrapping
 			return result.Value
 		case *object.Error:
 			return result
@@ -116,11 +149,10 @@ func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 	return result
 }
 
-// fn
-func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) object.Object {
+func evalBlockStatementWithDepthTracking(block *ast.BlockStatement, env *object.Environment, maxDepth int) object.Object {
 	var result object.Object
 	for _, statement := range block.Statements {
-		result = Eval(statement, env)
+		result = evalWithDepthTracking(statement, env, maxDepth-1)
 		if result != nil {
 			rt := result.Type()
 			if rt == object.RETURN_VALUE_OBJ || rt == object.ERROR_OBJ {
@@ -131,33 +163,44 @@ func evalBlockStatement(block *ast.BlockStatement, env *object.Environment) obje
 	return result
 }
 
-// callexp
-// arguments <= exp
-func evalExpressions(
+func evalIfExpressionWithDepthTracking(ie *ast.IfExpression, env *object.Environment, maxDepth int) object.Object {
+	condition := evalWithDepthTracking(ie.Condition, env, maxDepth-1)
+	if isError(condition) {
+		return condition
+	}
+	if isTruthy(condition) {
+		return evalWithDepthTracking(ie.Consequence, env, maxDepth-1)
+	} else if ie.Alternative != nil {
+		return evalWithDepthTracking(ie.Alternative, env, maxDepth-1)
+	} else {
+		return NULL
+	}
+}
+
+func applyFunctionWithDepthTracking(fn object.Object, args []object.Object, maxDepth int) object.Object {
+	function, ok := fn.(*object.Function)
+	if !ok {
+		return newError("not a function: %s", fn.Type())
+	}
+	extendedEnv := extendFunctionEnv(function, args)
+	evaluated := evalWithDepthTracking(function.Body, extendedEnv, maxDepth)
+	return unwrapReturnValue(evaluated)
+}
+
+func evalExpressionsWithDepthTracking(
 	exps []ast.Expression,
 	env *object.Environment,
+	maxDepth int,
 ) []object.Object {
 	var result []object.Object
 	for _, e := range exps {
-		evaluated := Eval(e, env)
+		evaluated := evalWithDepthTracking(e, env, maxDepth-1)
 		if isError(evaluated) {
 			return []object.Object{evaluated}
 		}
 		result = append(result, evaluated)
 	}
 	return result
-}
-
-// check for obj.func
-// also
-func applyFunction(fn object.Object, args []object.Object) object.Object {
-	function, ok := fn.(*object.Function)
-	if !ok {
-		return newError("not a function: %s", fn.Type())
-	}
-	extendedEnv := extendFunctionEnv(function, args)
-	evaluated := Eval(function.Body, extendedEnv)
-	return unwrapReturnValue(evaluated)
 }
 
 // extension of func env
@@ -284,21 +327,6 @@ func evalIntegerInfixExpression(
 	}
 }
 
-// if exp
-func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Object {
-	condition := Eval(ie.Condition, env)
-	if isError(condition) {
-		return condition
-	}
-	if isTruthy(condition) {
-		return Eval(ie.Consequence, env)
-	} else if ie.Alternative != nil {
-		return Eval(ie.Alternative, env)
-	} else {
-		return NULL
-	}
-}
-
 func isTruthy(obj object.Object) bool {
 	switch obj {
 	case TRUE:
@@ -321,7 +349,7 @@ func evalIdentifier(
 	env *object.Environment) object.Object {
 	val, ok := env.Get(node.Value)
 	if !ok {
-		return newError("identifier not found: " + node.Value)
+		return newError("identifier not found: %s", node.Value)
 	}
 	return val
 }

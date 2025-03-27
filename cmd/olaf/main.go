@@ -7,6 +7,7 @@ import (
 	"olaf/parser"
 	"strings"
 	"syscall/js"
+	"time"
 )
 
 func main() {
@@ -15,6 +16,11 @@ func main() {
 }
 
 func evaluateOlaf(this js.Value, args []js.Value) interface{} {
+	evalOptions := eval.EvalOptions{
+		MaxDepth: 200,
+		Timeout:  5 * time.Second,
+	}
+
 	if len(args) < 1 {
 		return map[string]interface{}{
 			"error": "No code provided",
@@ -39,7 +45,6 @@ func evaluateOlaf(this js.Value, args []js.Value) interface{} {
 
 	if len(errors) > 0 {
 		var errorBuilder strings.Builder
-
 		lexerErrors := l.FormatErrors()
 		parserErrors := p.FormatErrors()
 
@@ -60,11 +65,18 @@ func evaluateOlaf(this js.Value, args []js.Value) interface{} {
 	}
 
 	env := object.NewEnvironment()
-	evaluated := eval.Eval(program, env)
+
+	evaluated := eval.EvalWithOptions(program, env, evalOptions)
 
 	if evaluated == nil {
 		return map[string]interface{}{
 			"result": "null",
+		}
+	}
+
+	if errorObj, ok := evaluated.(*object.Error); ok {
+		return map[string]interface{}{
+			"error": errorObj.Message,
 		}
 	}
 
