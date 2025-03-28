@@ -1,7 +1,7 @@
 let wasmLoaded = false
 const go = new Go()
 
-let evaluateOlaf
+let evaluateSupBud
 
 async function initWasm() {
   const loadingElement = document.getElementById("loading")
@@ -32,12 +32,12 @@ async function initWasm() {
     go.run(result.instance)
     console.log("WASM Started")
 
-    console.log("evaluateOlaf:", typeof window.evaluateOlaf)
-    if (typeof window.evaluateOlaf === "function") {
-      evaluateOlaf = window.evaluateOlaf
-      console.log("evaluateOlaf assigned successfully.")
+    console.log("evaluateSupBud:", typeof window.evaluateSupBud)
+    if (typeof window.evaluateSupBud === "function") {
+      evaluateSupBud = window.evaluateSupBud
+      console.log("evaluateSupBud assigned successfully.")
     } else {
-      console.error("evaluateOlaf is not defined.")
+      console.error("evaluateSupBud is not defined.")
     }
 
     wasmLoaded = true
@@ -223,7 +223,7 @@ function executeCode(code, outputElement, maxLength = 1000) {
 
         setTimeout(() => {
           try {
-            const result = evaluateOlaf(trimmedCode)
+            const result = evaluateSupBud(trimmedCode)
             outputElement.textContent = result.error ? "Error: " + result.error : result.result
           } catch (error) {
             outputElement.textContent = "Error: " + error.message

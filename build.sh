@@ -14,7 +14,6 @@ fi
 
 echo -e "${GREEN}Creating directory structure...${NC}"
 mkdir -p web/js
-mkdir -p web/css
 
 echo -e "${GREEN}Building WebAssembly module...${NC}"
 GOOS=js GOARCH=wasm go build -o web/sup-bud.wasm cmd/sup-bud/main.go
@@ -37,7 +36,7 @@ echo -e "${GREEN}Building development server...${NC}"
 go build -o sup-bud-server server.go
 
 echo -e "${YELLOW}==== Build Complete ====${NC}"
-echo -e "To start the server, run: ${GREEN}./sup-bud-server${NC}"
+echo -e "To start the server, run: ${GREEN}./web/sup-bud-server${NC}"
 echo -e "Then open ${GREEN}http://localhost:8080${NC} in your browser"
 
 ./sup-bud-server

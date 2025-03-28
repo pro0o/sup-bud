@@ -12,11 +12,11 @@ import (
 )
 
 func main() {
-	js.Global().Set("evaluateOlaf", js.FuncOf(evaluateOlaf))
+	js.Global().Set("evaluateSupBud", js.FuncOf(evaluateSupBud))
 	select {}
 }
 
-func evaluateOlaf(this js.Value, args []js.Value) interface{} {
+func evaluateSupBud(this js.Value, args []js.Value) interface{} {
 	evalOptions := eval.EvalOptions{
 		MaxDepth: 200,
 		Timeout:  5 * time.Second,

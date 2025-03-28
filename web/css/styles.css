@@ -3,8 +3,9 @@
   --terminal-bg-lighter: #1a1a1a;
   --terminal-border: #303030;
   --terminal-text: #f0f0f0;
-  --terminal-green: #ffb000;
-  --terminal-amber: #66ff66;
+  --terminal-green: #8eb4ff; /* Brighter Pinkish Purple */
+  --terminal-amber: #b57aff; /* Brighter Bluish Purple */
+
   --terminal-header: #222;
   --terminal-font: "Courier New", monospace;
   --body-bg: #09090b;
@@ -245,7 +246,7 @@ textarea {
   flex-wrap: wrap;
   gap: 8px;
   margin: 10px 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .snippet-button {
@@ -253,6 +254,7 @@ textarea {
   color: var(--terminal-amber);
   padding: 5px 10px;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   flex: 1;
   min-width: 80px;
