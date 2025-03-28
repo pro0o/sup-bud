@@ -2,8 +2,9 @@ package lexer
 
 import (
 	"fmt"
-	"olaf/token"
 	"strings"
+
+	"github.com/pro0o/sup-bud/token"
 )
 
 type Lexer struct {

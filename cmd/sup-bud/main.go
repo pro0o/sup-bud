@@ -1,13 +1,14 @@
 package main
 
 import (
-	"olaf/eval"
-	"olaf/lexer"
-	"olaf/object"
-	"olaf/parser"
 	"strings"
 	"syscall/js"
 	"time"
+
+	"github.com/pro0o/sup-bud/eval"
+	"github.com/pro0o/sup-bud/lexer"
+	"github.com/pro0o/sup-bud/object"
+	"github.com/pro0o/sup-bud/parser"
 )
 
 func main() {

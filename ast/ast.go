@@ -2,8 +2,9 @@ package ast
 
 import (
 	"bytes"
-	"olaf/token"
 	"strings"
+
+	"github.com/pro0o/sup-bud/token"
 )
 
 type Node interface {
@@ -56,7 +57,6 @@ func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 func (i *Identifier) String() string { return i.Value }
 
-// olaf statement
 type LetStatement struct {
 	Token token.Token // the token.LET in question.
 	Name  *Identifier
@@ -208,7 +208,7 @@ func (bs *BlockStatement) String() string {
 }
 
 type FunctionLiteral struct {
-	Token      token.Token // The 'fn' token
+	Token      token.Token // The 'bud' token
 	Parameters []*Identifier
 	Body       *BlockStatement
 }

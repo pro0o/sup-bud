@@ -3,8 +3,9 @@ package object
 import (
 	"bytes"
 	"fmt"
-	"olaf/ast"
 	"strings"
+
+	"github.com/pro0o/sup-bud/ast"
 )
 
 type ObjectType string
@@ -103,7 +104,7 @@ func NewEnclosedEnvironment(outer *Environment) *Environment {
 type Function struct {
 	Parameters []*ast.Identifier
 	Body       *ast.BlockStatement
-	Env        *Environment // fn has its own env
+	Env        *Environment // bud has its own env
 	// closures, env it access later
 }
 
@@ -114,7 +115,7 @@ func (f *Function) Inspect() string {
 	for _, p := range f.Parameters {
 		params = append(params, p.String())
 	}
-	out.WriteString("fn")
+	out.WriteString("bud")
 	out.WriteString("(")
 	out.WriteString(strings.Join(params, ", "))
 	out.WriteString(") {\n")

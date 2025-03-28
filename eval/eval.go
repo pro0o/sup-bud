@@ -3,9 +3,10 @@ package eval
 import (
 	"context"
 	"fmt"
-	"olaf/ast"
-	"olaf/object"
 	"time"
+
+	"github.com/pro0o/sup-bud/ast"
+	"github.com/pro0o/sup-bud/object"
 )
 
 var (
@@ -56,7 +57,7 @@ func EvalWithOptions(node ast.Node, env *object.Environment, opts EvalOptions) o
 
 func evalWithDepthTracking(node ast.Node, env *object.Environment, maxDepth int) object.Object {
 	if maxDepth <= 0 {
-		return newError("Max recursion depth reached, Slow down brother—")
+		return newError("Max recursion depth reached, Slow down brotherrrr—")
 	}
 
 	switch node := node.(type) {
@@ -177,10 +178,10 @@ func evalIfExpressionWithDepthTracking(ie *ast.IfExpression, env *object.Environ
 	}
 }
 
-func applyFunctionWithDepthTracking(fn object.Object, args []object.Object, maxDepth int) object.Object {
-	function, ok := fn.(*object.Function)
+func applyFunctionWithDepthTracking(bud object.Object, args []object.Object, maxDepth int) object.Object {
+	function, ok := bud.(*object.Function)
 	if !ok {
-		return newError("not a function: %s", fn.Type())
+		return newError("not a function: %s", bud.Type())
 	}
 	extendedEnv := extendFunctionEnv(function, args)
 	evaluated := evalWithDepthTracking(function.Body, extendedEnv, maxDepth)
@@ -205,11 +206,11 @@ func evalExpressionsWithDepthTracking(
 
 // extension of func env
 func extendFunctionEnv(
-	fn *object.Function,
+	bud *object.Function,
 	args []object.Object,
 ) *object.Environment {
-	env := object.NewEnclosedEnvironment(fn.Env)
-	for paramIdx, param := range fn.Parameters {
+	env := object.NewEnclosedEnvironment(bud.Env)
+	for paramIdx, param := range bud.Parameters {
 		env.Set(param.Value, args[paramIdx])
 	}
 	return env

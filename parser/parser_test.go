@@ -2,17 +2,18 @@ package parser
 
 import (
 	"fmt"
-	"olaf/ast"
-	"olaf/lexer"
 	"testing"
+
+	"github.com/pro0o/sup-bud/ast"
+	"github.com/pro0o/sup-bud/lexer"
 )
 
 func TestLetStatement(t *testing.T) {
 
 	input := `
-	olaf x = 5;
-	olaf y = 10;
-	olaf foo = 47;
+	sup x = 5;
+	sup y = 10;
+	sup foo = 47;
 	`
 	// init
 	l := lexer.New(input)
@@ -45,13 +46,13 @@ func TestLetStatement(t *testing.T) {
 
 func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	/*
-		if s.TokenLiteral() != "olaf" {
-			t.Errorf("s.TokenLiteral not 'olaf'. got=%q", s.TokenLiteral())
+		if s.TokenLiteral() != "sup" {
+			t.Errorf("s.TokenLiteral not 'sup'. got=%q", s.TokenLiteral())
 			return false
 		}
 	*/
 
-	// type assertion on whether the interface holds the olaf stmt type
+	// type assertion on whether the interface holds the sup stmt type
 	letStmt, ok := s.(*ast.LetStatement)
 	if !ok {
 		t.Errorf("s not *ast.LetStatement. got=%T", s)
@@ -75,9 +76,9 @@ func TestLetStatements(t *testing.T) {
 		expectedIdentifier string
 		expectedValue      interface{}
 	}{
-		{"olaf x = 5;", "x", 5},
-		{"olaf y = true;", "y", true},
-		{"olaf foobar = y;", "foobar", "y"},
+		{"sup x = 5;", "x", 5},
+		{"sup y = true;", "y", true},
+		{"sup foobar = y;", "foobar", "y"},
 	}
 	for _, tt := range tests {
 		l := lexer.New(tt.input)
@@ -550,7 +551,7 @@ func TestIfExpression(t *testing.T) {
 }
 
 func TestFunctionLiteralParsing(t *testing.T) {
-	input := `fn(x, y) { x + y; }`
+	input := `bud(x, y) { x + y; }`
 	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
@@ -592,9 +593,9 @@ func TestFunctionParameterParsing(t *testing.T) {
 		input          string
 		expectedParams []string
 	}{
-		{input: "fn() {};", expectedParams: []string{}},
-		{input: "fn(x) {};", expectedParams: []string{"x"}},
-		{input: "fn(x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
+		{input: "bud() {};", expectedParams: []string{}},
+		{input: "bud(x) {};", expectedParams: []string{"x"}},
+		{input: "bud(x, y, z) {};", expectedParams: []string{"x", "y", "z"}},
 	}
 	for _, tt := range tests {
 		l := lexer.New(tt.input)

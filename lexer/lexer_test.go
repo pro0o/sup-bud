@@ -1,17 +1,18 @@
 package lexer
 
 import (
-	"olaf/token"
 	"testing"
+
+	"github.com/pro0o/sup-bud/token"
 )
 
 func TestNextToken(t *testing.T) {
-	input := `olaf five = 5;
-		olaf ten = 10;
-		olaf add = fn(x, y) {
+	input := `sup five = 5;
+		sup ten = 10;
+		sup add = bud(x, y) {
 			x + y;
 		};
-		olaf result = add(five, ten);
+		sup result = add(five, ten);
 		!-/*5;
 		5 < 10 > 5;
 
@@ -27,20 +28,20 @@ func TestNextToken(t *testing.T) {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.LET, "olaf"},
+		{token.LET, "sup"},
 		{token.IDENT, "five"},
 		{token.ASSIGN, "="},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-		{token.LET, "olaf"},
+		{token.LET, "sup"},
 		{token.IDENT, "ten"},
 		{token.ASSIGN, "="},
 		{token.INT, "10"},
 		{token.SEMICOLON, ";"},
-		{token.LET, "olaf"},
+		{token.LET, "sup"},
 		{token.IDENT, "add"},
 		{token.ASSIGN, "="},
-		{token.FUNCTION, "fn"},
+		{token.FUNCTION, "bud"},
 		{token.LPAREN, "("},
 		{token.IDENT, "x"},
 		{token.COMMA, ","},
@@ -53,7 +54,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
-		{token.LET, "olaf"},
+		{token.LET, "sup"},
 		{token.IDENT, "result"},
 		{token.ASSIGN, "="},
 		{token.IDENT, "add"},

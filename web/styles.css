@@ -28,6 +28,7 @@
 }
 
 body {
+  cursor: help;
   background-color: var(--body-bg);
   color: var(--terminal-text);
   line-height: 1.5;
@@ -41,15 +42,28 @@ body {
 }
 .app-header {
   display: flex;
-  align-items: center;
-  justify-content: center; /* Centers the logo horizontally */
-  padding: 2rem;
+  align-items: left;
+  justify-content: left; /* Centers the logo horizontally */
+  padding: 1rem;
   width: 100%;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 .header-logo {
-  width: 400px;
+  width: 250px;
   height: auto;
+}
+
+.logo-text {
+  margin-left: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--terminal-green);
 }
 
 
@@ -344,30 +358,33 @@ textarea {
   padding: 20px 15px;
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
 }
 
 .footer-links {
   display: flex;
   gap: 20px;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: left;
 }
-
 .footer-links a {
   color: var(--terminal-amber);
   text-decoration: none;
   font-size: 14px;
-  transition: color 0.3s ease;
+  transition: all 0.1s ease;
   display: flex;
   align-items: center;
   gap: 5px;
+  border-radius: 4px;
 }
 
 .footer-links a:hover {
-  color: var(--terminal-green);
-  text-decoration: underline;
+  color: white; /* Change text color */
+  background-color: var(--terminal-green); /* Highlight background */
+  text-decoration: none;
+  color: #18181b;
+  box-shadow: 0 0 0px var(--terminal-green); /* Optional glow effect */
 }
 
 /* Responsive Footer */

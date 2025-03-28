@@ -2,11 +2,12 @@ package parser
 
 import (
 	"fmt"
-	"olaf/ast"
-	"olaf/lexer"
-	"olaf/token"
 	"strconv"
 	"strings"
+
+	"github.com/pro0o/sup-bud/ast"
+	"github.com/pro0o/sup-bud/lexer"
+	"github.com/pro0o/sup-bud/token"
 )
 
 type Parser struct {
@@ -28,12 +29,12 @@ type (
 	infixParseFn  func(ast.Expression) ast.Expression
 )
 
-func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
-	p.prefixParseFns[tokenType] = fn
+func (p *Parser) registerPrefix(tokenType token.TokenType, bud prefixParseFn) {
+	p.prefixParseFns[tokenType] = bud
 }
 
-func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
-	p.infixParseFns[tokenType] = fn
+func (p *Parser) registerInfix(tokenType token.TokenType, bud infixParseFn) {
+	p.infixParseFns[tokenType] = bud
 }
 
 // operator precedence

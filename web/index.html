@@ -9,8 +9,6 @@
 </head>
 
 <body>
-   
-
     <div id="loading" class="loading">
         <div class="loading-content">
             <div class="loading-text">
@@ -26,28 +24,31 @@
 
     <div id="app">
         <header class="app-header">
-            <img src="assets/logo.svg" alt="Olaf Logo" class="header-logo">
+            <a href="/" class="logo-container">
+                <img src="assets/sup.svg" alt="Olaf Logo" class="header-logo">
+                <span class="logo-text">[a toy language in golang]</span>
+            </a>
         </header>
         <div class="terminal-container">
             <div class="terminal-content">
                 <div class="editor-container">
                     <div class="editor-header">
-                        <span class="prompt">olaf@editor:</span>
+                        <span class="prompt">sup@editor:</span>
                     </div>
                     <div class="editor-wrapper">
                         <div id="syntax-highlight-container" class="syntax-highlight-container"></div>
-                        <textarea id="code-input" spellcheck="false">olaf x = 10;
-olaf y = 15;
-olaf add = fn(a, b) { a + b };
+                        <textarea id="code-input" spellcheck="false">sup x = 10;
+sup y = 15;
+sup add = bud(a, b) { a + b };
 add(x, y);</textarea>
                     </div>
 
                     <div class="code-snippets">
-                        <button class="snippet-button code-example" data-code="olaf x = 10;
-olaf y = 15;
-olaf add = fn(a, b) { a + b };
+                        <button class="snippet-button code-example" data-code="sup x = 10;
+sup y = 15;
+sup add = bud(a, b) { a + b };
 add(x, y);">addition</button>
-                        <button class="snippet-button code-example" data-code="olaf factorial = fn(n) {
+                        <button class="snippet-button code-example" data-code="sup factorial = bud(n) {
  if (n == 0) {
  return 1;
  } else {
@@ -55,11 +56,11 @@ add(x, y);">addition</button>
  }
 };
 factorial(5);">factorial</button>
-                        <button class="snippet-button code-example" data-code="olaf a = 5;
-olaf b = 10;
-olaf c = if (a > b) { a } else { b };
+                        <button class="snippet-button code-example" data-code="sup a = 5;
+sup b = 10;
+sup c = if (a > b) { a } else { b };
 c;">if exp</button>
-                        <button class="snippet-button code-example" data-code="olaf fibonacci = fn(n) {
+                        <button class="snippet-button code-example" data-code="sup fibonacci = bud(n) {
  if (n == 0) {
  return 0;
  } else {
@@ -87,7 +88,7 @@ fibonacci(10);">fibonacci</button>
 
                 <div class="output-container">
                     <div class="output-header">
-                        <span class="prompt">olaf@output:</span>
+                        <span class="prompt">sup@output:</span>
                     </div>
                     <pre id="output" class="terminal-output">// Output will appear here</pre>
                 </div>
@@ -96,8 +97,8 @@ fibonacci(10);">fibonacci</button>
 
         <footer id="footer" class="footer">
             <div class="footer-links">
-                <a href="https://github.com/your-github" target="_blank">[gitHub]</a>
-                <a href="https://twitter.com/your-twitter" target="_blank">[twitter]</a>
+                <a href="https://github.com/sup-bud" target="_blank">[know more about->sup' bud?]</a>
+                <a href="https://twitter.com/your-twitter" target="_blank">[my twitter]</a>
             </div>
         </footer>
     </div>

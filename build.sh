@@ -17,7 +17,7 @@ mkdir -p web/js
 mkdir -p web/css
 
 echo -e "${GREEN}Building WebAssembly module...${NC}"
-GOOS=js GOARCH=wasm go build -o web/olaf.wasm cmd/olaf/main.go
+GOOS=js GOARCH=wasm go build -o web/sup-bud.wasm cmd/sup-bud/main.go
 
 echo -e "${GREEN}Copying WebAssembly support files...${NC}"
 GO_ROOT=$(go env GOROOT)
@@ -34,10 +34,10 @@ if [ -f "index.html" ]; then
 fi
 
 echo -e "${GREEN}Building development server...${NC}"
-go build -o olaf-server server.go
+go build -o sup-bud-server server.go
 
 echo -e "${YELLOW}==== Build Complete ====${NC}"
-echo -e "To start the server, run: ${GREEN}./olaf-server${NC}"
+echo -e "To start the server, run: ${GREEN}./sup-bud-server${NC}"
 echo -e "Then open ${GREEN}http://localhost:8080${NC} in your browser"
 
-./olaf-server
+./sup-bud-server

@@ -3,10 +3,10 @@ package repl
 // import (
 // 	"fmt"
 // 	"io"
-// 	"olaf/eval"
-// 	"olaf/lexer"
-// 	"olaf/object"
-// 	"olaf/parser"
+// 	"github.com/pro0o/sup-bud/eval"
+// 	"github.com/pro0o/sup-bud/lexer"
+// 	"github.com/pro0o/sup-bud/object"
+// 	"github.com/pro0o/sup-bud/parser"
 // 	"strings"
 
 // )

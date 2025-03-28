@@ -35,8 +35,8 @@ const (
 	LBRACE = "{"
 	RBRACE = "}"
 
-	FUNCTION = "FUNCTION"
-	LET      = "OLAF"
+	FUNCTION = "BUD"
+	LET      = "SUP"
 	TRUE     = "TRUE"
 	FALSE    = "FALSE"
 	IF       = "IF"
@@ -45,8 +45,8 @@ const (
 )
 
 var keywords = map[string]TokenType{
-	"fn":     FUNCTION,
-	"olaf":   LET,
+	"bud":    FUNCTION,
+	"sup":    LET,
 	"true":   TRUE,
 	"false":  FALSE,
 	"if":     IF,
