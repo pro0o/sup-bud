@@ -1,15 +1,23 @@
 :root {
-  --terminal-bg: #0c0c0c;
+  --terminal-bg: #18181b;
   --terminal-bg-lighter: #1a1a1a;
-  --terminal-border: #202020;
+  --terminal-border: #303030;
   --terminal-text: #f0f0f0;
-  --terminal-green: #66FF66;
+  --terminal-green: #66ff66;
   --terminal-amber: #ffb000;
   --terminal-header: #222;
   --terminal-font: "Courier New", monospace;
-  --body-bg: #101010;
+  --body-bg: #09090b;
   --button-hover-bg: var(--terminal-green);
   --button-hover-text: #000;
+  
+  --syntax-keyword: #c65c98;     
+  --syntax-operator: #98aeff;    
+  --syntax-punctuation: #ffffff; 
+  --syntax-number: #d6acfc;      
+  --syntax-identifier: #ffffff;  
+  --syntax-comment: #8095e1;     
+  --syntax-string: #f8f7a1;      
 }
 
 * {
@@ -31,6 +39,19 @@ body {
   overflow-x: hidden;
   transition: background-color 0.3s ease;
 }
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centers the logo horizontally */
+  padding: 2rem;
+  width: 100%;
+}
+
+.header-logo {
+  width: 400px;
+  height: auto;
+}
+
 
 .terminal-container {
   width: 800px;
@@ -38,7 +59,8 @@ body {
   background-color: var(--terminal-bg);
   border-radius: 16px;
   border: 8px solid var(--terminal-border);
-  box-shadow: 0 0 16px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 16px rgba(52, 52, 52, 0.35);
+
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -48,27 +70,27 @@ body {
 
 @media (max-width: 1024px) {
   .terminal-container {
-      width: 90vw;
-      height: 60vh;
+    width: 90vw;
+    height: 60vh;
   }
 }
 
 @media (max-width: 768px) {
   .terminal-container {
-      width: 95vw;
-      height: 70vh;
-      padding: 10px;
+    width: 95vw;
+    height: 70vh;
+    padding: 10px;
   }
 
   .code-snippets {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 
   .snippet-button {
-      font-size: 11px;
-      padding: 4px 6px;
+    font-size: 11px;
+    padding: 4px 6px;
   }
 }
 
@@ -83,7 +105,7 @@ body {
 
 @media (min-width: 768px) {
   .terminal-content {
-      flex-direction: row;
+    flex-direction: row;
   }
 }
 
@@ -101,31 +123,47 @@ body {
 .output-header {
   margin-bottom: 10px;
   font-size: 14px;
-  font-weight:500;
+  font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .prompt {
-  color: var(--terminal-green);
+  color: var(--terminal-text);
   margin-right: 8px;
 }
 
 /* Input and Output Styles */
 textarea,
-.terminal-output {
+.syntax-highlight-container {
   flex-grow: 1;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--body-bg);
   color: var(--terminal-text);
   padding: 10px;
   font-size: 14px;
   min-height: 150px;
-  border: 2px solid var(--terminal-border);
+  border: none;
   border-radius: 4px;
+  font-family: var(--terminal-font);
+  line-height: 1.5;
+  tab-size: 4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  overflow-y: auto;
 }
 
 textarea {
   resize: none;
   outline: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: transparent;
+  background: transparent;
+  caret-color: white; 
+  z-index: 2;
 }
 
 .terminal-output {
@@ -133,6 +171,59 @@ textarea {
   overflow-y: auto;
   white-space: pre-wrap;
   word-break: break-word;
+  flex-grow: 1;
+  background-color: var(--body-bg);
+  padding: 10px;
+  font-size: 14px;
+  min-height: 150px;
+  border: 2px solid var(--terminal-border);
+  border-radius: 4px;
+}
+
+/* Syntax highlighting container */
+.syntax-highlight-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Editor wrapper for positioning */
+.editor-wrapper {
+  position: relative;
+  flex-grow: 1;
+  border: 2px solid var(--terminal-border);
+  border-radius: 4px;
+  background-color: var(--body-bg);
+}
+
+/* Token styles */
+.token-keyword {
+  color: var(--syntax-keyword);
+  font-weight: bold;
+}
+
+.token-operator {
+  color: var(--syntax-operator);
+}
+
+.token-punctuation {
+  color: var(--syntax-punctuation);
+}
+
+.token-number {
+  color: var(--syntax-number);
+}
+
+.token-identifier {
+  color: var(--syntax-identifier);
+}
+
+.token-whitespace {
+  white-space: pre;
 }
 
 .code-snippets {
@@ -140,11 +231,11 @@ textarea {
   flex-wrap: wrap;
   gap: 8px;
   margin: 10px 0;
-  font-weight:500;
+  font-weight: 500;
 }
 
 .snippet-button {
-  background-color: var(--terminal-bg-lighter);
+  background-color: var(--terminal-border);
   color: var(--terminal-amber);
   padding: 5px 10px;
   font-size: 12px;
@@ -173,7 +264,7 @@ textarea {
   background-color: var(--terminal-bg-lighter);
   color: var(--terminal-text);
   border-radius: 4px;
-  border: 1px solid var(--terminal-border);
+  border: 2px solid var(--terminal-border);
   padding: 8px 15px;
   font-size: 14px;
   cursor: pointer;
@@ -228,26 +319,10 @@ textarea {
 .loading-text {
   padding: 30px;
   text-align: center;
-  color: var(--terminal-green);
+  color: var(--terminal-text);
   font-size: 16px;
 }
 
-/* Cursor Animation */
-.cursor {
-  display: inline-block;
-  width: 10px;
-  height: 20px;
-  background-color: var(--terminal-green);
-  margin-left: 5px;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-
-/* Error Message */
 .error-message {
   background-color: rgba(255, 0, 0, 0.2);
   border: 1px solid red;
@@ -265,9 +340,6 @@ textarea {
   display: none;
 }
 
-/* Previous CSS remains the same, add these new styles at the end */
-
-/* Footer Styles */
 .footer {
   padding: 20px 15px;
   width: 100%;
@@ -301,11 +373,12 @@ textarea {
 /* Responsive Footer */
 @media (max-width: 768px) {
   .footer-links {
-      flex-direction: column;
-      gap: 10px;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .footer-links a {
-      font-size: 12px;
+    font-size: 12px;
   }
 }
+
