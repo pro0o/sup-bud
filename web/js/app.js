@@ -142,6 +142,7 @@ function initComponents() {
   const codeInput = document.getElementById("code-input")
   const outputElement = document.getElementById("output")
   const snippetButtons = document.querySelectorAll(".code-example")
+  const MAX_CODE_LENGTH = 200
 
   fixTextareaCursor(codeInput)
   setupTabHandling()
@@ -149,7 +150,7 @@ function initComponents() {
   codeInput.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.key === "Enter") {
       event.preventDefault()
-      executeCode(codeInput.value, outputElement)
+      executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH)
     }
   })
 
@@ -160,7 +161,7 @@ function initComponents() {
   applySyntaxHighlighting(codeInput)
 
   runButton.addEventListener("click", () => {
-    executeCode(codeInput.value, outputElement)
+    executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH)
   })
 
   clearButton.addEventListener("click", () => {
@@ -190,13 +191,18 @@ function fixTextareaCursor(textarea) {
   textarea.setAttribute("spellcheck", "false")
 }
 
-function executeCode(code, outputElement) {
+function executeCode(code, outputElement, maxLength = 1000) {
   if (!wasmLoaded) {
     outputElement.textContent = "Error: Interpreter not loaded yet"
     return
   }
 
   const trimmedCode = code.trim()
+
+  if (trimmedCode.length > maxLength) {
+    outputElement.textContent = `Error: Code exceeds maximum length of code. Hold onn—`
+    return
+  }
 
   if (!trimmedCode) {
     outputElement.textContent = "Error: No code to execute"
