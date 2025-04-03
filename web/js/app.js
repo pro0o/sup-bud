@@ -1,317 +1,286 @@
-let wasmLoaded = false
-const go = new Go()
+let wasmLoaded = false;
+const go = new Go();
 
-let evaluateSupBud
+let evaluateSupBud;
 
 async function initWasm() {
-  const loadingElement = document.getElementById("loading")
-  const errorMessageElement = document.getElementById("error-message")
-  const errorTextElement = document.getElementById("error-text")
-  const runButton = document.getElementById("run-button")
-  const clearButton = document.getElementById("clear-button")
-  const codeInput = document.getElementById("code-input")
-  const wasmStatusElement = document.getElementById("wasm-status")
+  const loadingElement = document.getElementById("loading");
+  const errorMessageElement = document.getElementById("error-message");
+  const errorTextElement = document.getElementById("error-text");
+  const runButton = document.getElementById("run-button");
+  const clearButton = document.getElementById("clear-button");
+  const codeInput = document.getElementById("code-input");
+  const wasmStatusElement = document.getElementById("wasm-status");
 
   try {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    console.log("Initializing WASM...");
+    const result = await WebAssembly.instantiateStreaming(fetch("./sup-bud.wasm"), go.importObject);
+    console.log("WASM Instance:", result.instance);
 
-    const loadingTextElement = document.querySelector(".typed-text")
-    const originalText = loadingTextElement.textContent
-    loadingTextElement.textContent = ""
+    go.run(result.instance);
+    console.log("WASM Started");
 
-    for (let i = 0; i < originalText.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 30))
-      loadingTextElement.textContent += originalText[i]
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 500))
-    console.log("Initializing WASM...")
-    const result = await WebAssembly.instantiateStreaming(fetch("sup-bud.wasm"), go.importObject)
-    console.log("WASM Instance:", result.instance)
-
-    go.run(result.instance)
-    console.log("WASM Started")
-
-    console.log("evaluateSupBud:", typeof window.evaluateSupBud)
+    console.log("evaluateSupBud:", typeof window.evaluateSupBud);
     if (typeof window.evaluateSupBud === "function") {
-      evaluateSupBud = window.evaluateSupBud
-      console.log("evaluateSupBud assigned successfully.")
+      evaluateSupBud = window.evaluateSupBud;
+      console.log("evaluateSupBud assigned successfully.");
     } else {
-      console.error("evaluateSupBud is not defined.")
+      console.error("evaluateSupBud is not defined.");
+      throw new Error("evaluateSupBud function not found");
     }
 
-    wasmLoaded = true
-    runButton.disabled = false
-    clearButton.disabled = false
+    wasmLoaded = true;
+    runButton.disabled = false;
+    clearButton.disabled = false;
 
-    initComponents()
+    initComponents();
 
-    loadingElement.style.opacity = "0"
+    loadingElement.style.opacity = "0";
     setTimeout(() => {
-      loadingElement.classList.add("hidden")
-      loadingElement.style.opacity = "1"
-    }, 500)
+      loadingElement.classList.add("hidden");
+      loadingElement.style.opacity = "1";
+    }, 500);
 
     setTimeout(() => {
-      codeInput.focus()
-    }, 100)
+      codeInput.focus();
+    }, 100);
   } catch (err) {
-    console.error("Failed to load WASM:", err)
+    console.error("Failed to load WASM:", err);
 
-    errorTextElement.textContent = "Failed to load the interpreter. Please check the console for details."
-    errorMessageElement.classList.add("visible")
+    errorTextElement.textContent = "Failed to load the interpreter. Please check the console for details.";
+    errorMessageElement.classList.remove("hidden");
+    errorMessageElement.classList.add("visible");
 
     if (wasmStatusElement) {
-      wasmStatusElement.textContent = "Error"
-      wasmStatusElement.style.color = "var(--terminal-red)"
+      wasmStatusElement.textContent = "Error";
+      wasmStatusElement.style.color = "var(--terminal-red)";
     }
 
-    loadingElement.classList.add("hidden")
+    loadingElement.classList.add("hidden");
   }
 }
 
 function applySyntaxHighlighting(textarea) {
-  const code = textarea.value
-  const tokens = tokenize(code)
+  const code = textarea.value;
+  const tokens = tokenize(code);
 
-  let highlightDiv = document.getElementById("syntax-highlight-container")
+  let highlightDiv = document.getElementById("syntax-highlight-container");
   if (!highlightDiv) {
-    highlightDiv = document.createElement("div")
-    highlightDiv.id = "syntax-highlight-container"
-    highlightDiv.className = "syntax-highlight-container"
-    textarea.parentNode.insertBefore(highlightDiv, textarea)
+    highlightDiv = document.createElement("div");
+    highlightDiv.id = "syntax-highlight-container";
+    highlightDiv.className = "syntax-highlight-container";
+    textarea.parentNode.insertBefore(highlightDiv, textarea);
   }
 
-  highlightDiv.innerHTML = ""
+  highlightDiv.innerHTML = "";
 
   tokens.forEach((token) => {
-    const span = document.createElement("span")
-    span.textContent = token.text
-    span.className = `token-${token.type}`
-    highlightDiv.appendChild(span)
-  })
+    const span = document.createElement("span");
+    span.textContent = token.text;
+    span.className = `token-${token.type}`;
+    highlightDiv.appendChild(span);
+  });
 
-  highlightDiv.scrollTop = textarea.scrollTop
-  highlightDiv.scrollLeft = textarea.scrollLeft
+  highlightDiv.scrollTop = textarea.scrollTop;
+  highlightDiv.scrollLeft = textarea.scrollLeft;
 }
 
 function setupScrollSync() {
-  const textarea = document.getElementById("code-input")
-  const highlightDiv = document.getElementById("syntax-highlight-container")
+  const textarea = document.getElementById("code-input");
+  const highlightDiv = document.getElementById("syntax-highlight-container");
 
   if (textarea && highlightDiv) {
     textarea.addEventListener("scroll", () => {
-      highlightDiv.scrollTop = textarea.scrollTop
-      highlightDiv.scrollLeft = textarea.scrollLeft
-    })
+      highlightDiv.scrollTop = textarea.scrollTop;
+      highlightDiv.scrollLeft = textarea.scrollLeft;
+    });
 
     window.addEventListener("resize", () => {
-      highlightDiv.scrollTop = textarea.scrollTop
-      highlightDiv.scrollLeft = textarea.scrollLeft
-    })
+      highlightDiv.scrollTop = textarea.scrollTop;
+      highlightDiv.scrollLeft = textarea.scrollLeft;
+    });
 
-    highlightDiv.scrollTop = textarea.scrollTop
-    highlightDiv.scrollLeft = textarea.scrollLeft
-  }
-}
-
-function setupTabHandling() {
-  const textarea = document.getElementById("code-input")
-
-  if (textarea) {
-    textarea.addEventListener("keydown", (e) => {
-      if (e.key === "Tab") {
-        e.preventDefault()
-
-        const start = textarea.selectionStart
-        const end = textarea.selectionEnd
-
-        textarea.value = textarea.value.substring(0, start) + "  " + textarea.value.substring(end)
-
-        textarea.selectionStart = textarea.selectionEnd = start + 2
-
-        applySyntaxHighlighting(textarea)
-      }
-    })
+    highlightDiv.scrollTop = textarea.scrollTop;
+    highlightDiv.scrollLeft = textarea.scrollLeft;
   }
 }
 
 function initComponents() {
-  const runButton = document.getElementById("run-button")
-  const clearButton = document.getElementById("clear-button")
-  const codeInput = document.getElementById("code-input")
-  const outputElement = document.getElementById("output")
-  const snippetButtons = document.querySelectorAll(".code-example")
-  const MAX_CODE_LENGTH = 200
+  const runButton = document.getElementById("run-button");
+  const clearButton = document.getElementById("clear-button");
+  const codeInput = document.getElementById("code-input");
+  const outputElement = document.getElementById("output");
+  const snippetButtons = document.querySelectorAll(".code-example");
+  const MAX_CODE_LENGTH = 200;
 
-  fixTextareaCursor(codeInput)
-  setupTabHandling()
+  fixTextareaCursor(codeInput);
 
   codeInput.addEventListener("keydown", (event) => {
-    if (event.ctrlKey && event.key === "Enter") {
-      event.preventDefault()
-      executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH)
+    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+      event.preventDefault();
+      executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH);
     }
-  })
+  });
 
   codeInput.addEventListener("input", () => {
-    applySyntaxHighlighting(codeInput)
-  })
+    applySyntaxHighlighting(codeInput);
+  });
 
-  applySyntaxHighlighting(codeInput)
+  applySyntaxHighlighting(codeInput);
 
   runButton.addEventListener("click", () => {
-    executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH)
-  })
+    executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH);
+  });
 
   clearButton.addEventListener("click", () => {
-    codeInput.value = ""
-    outputElement.textContent = "// Output cleared"
-    applySyntaxHighlighting(codeInput)
+    codeInput.value = "";
+    outputElement.textContent = "// Output cleared";
+    applySyntaxHighlighting(codeInput);
     setTimeout(() => {
-      codeInput.focus()
-    }, 0)
-  })
+      codeInput.focus();
+    }, 0);
+  });
 
   snippetButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      codeInput.value = button.getAttribute("data-code")
-      applySyntaxHighlighting(codeInput)
-      codeInput.focus()
-    })
-  })
+      codeInput.value = button.getAttribute("data-code");
+      applySyntaxHighlighting(codeInput);
+      codeInput.focus();
+    });
+  });
 }
 
 function fixTextareaCursor(textarea) {
-  textarea.style.cursor = "text"
+  textarea.style.cursor = "text";
 
-  textarea.setAttribute("autocomplete", "off")
-  textarea.setAttribute("autocorrect", "off")
-  textarea.setAttribute("autocapitalize", "off")
-  textarea.setAttribute("spellcheck", "false")
+  textarea.setAttribute("autocomplete", "off");
+  textarea.setAttribute("autocorrect", "off");
+  textarea.setAttribute("autocapitalize", "off");
+  textarea.setAttribute("spellcheck", "false");
 }
 
 function executeCode(code, outputElement, maxLength = 1000) {
   if (!wasmLoaded) {
-    outputElement.textContent = "Error: Interpreter not loaded yet"
-    return
+    outputElement.textContent = "Error: Interpreter not loaded yet";
+    return;
   }
 
-  const trimmedCode = code.trim()
+  const trimmedCode = code.trim();
 
   if (trimmedCode.length > maxLength) {
-    outputElement.textContent = `Error: Code exceeds maximum length of code. Hold onn—`
-    return
+    outputElement.textContent = `Error: Code exceeds maximum length of ${maxLength} characters`;
+    return;
   }
 
   if (!trimmedCode) {
-    outputElement.textContent = "Error: No code to execute"
-    return
+    outputElement.textContent = "Error: No code to execute";
+    return;
   }
 
   try {
-    outputElement.textContent = ""
-    const typingText = "Executing..."
+    outputElement.textContent = "";
+    const typingText = "Executing...";
 
-    let i = 0
+    let i = 0;
     const typingInterval = setInterval(() => {
       if (i < typingText.length) {
-        outputElement.textContent += typingText[i]
-        i++
+        outputElement.textContent += typingText[i];
+        i++;
       } else {
-        clearInterval(typingInterval)
+        clearInterval(typingInterval);
 
         setTimeout(() => {
           try {
-            const result = evaluateSupBud(trimmedCode)
-            outputElement.textContent = result.error ? "Error: " + result.error : result.result
+            const result = evaluateSupBud(trimmedCode);
+            outputElement.textContent = result.error ? "Error: " + result.error : result.result;
           } catch (error) {
-            outputElement.textContent = "Error: " + error.message
-            console.error(error)
+            outputElement.textContent = "Error: " + error.message;
+            console.error(error);
           }
-        }, 300)
+        }, 300);
       }
-    }, 50)
+    }, 50);
   } catch (error) {
-    outputElement.textContent = "Error: " + error.message
-    console.error(error)
+    outputElement.textContent = "Error: " + error.message;
+    console.error(error);
   }
 }
 
 const TOKEN_TYPES = {
   KEYWORD: ["sup", "bud", "true", "false", "if", "else", "return"],
-  OPERATOR: ["+", "-", "*", "/", "=", "==", "!=", "<", ">"],
+  OPERATOR: ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">="],
   PUNCTUATION: [",", ";", "(", ")", "{", "}"],
   NUMBER: /^\d+$/,
   IDENTIFIER: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
-}
+};
 
 function tokenize(code) {
-  const tokens = []
-  let currentToken = ""
-  const currentType = null
+  const tokens = [];
+  let currentToken = "";
 
   function pushCurrentToken() {
     if (currentToken) {
-      let type = "identifier"
+      let type = "identifier";
 
       if (TOKEN_TYPES.KEYWORD.includes(currentToken)) {
-        type = "keyword"
+        type = "keyword";
       } else if (currentToken.match(TOKEN_TYPES.NUMBER)) {
-        type = "number"
+        type = "number";
       }
 
       tokens.push({
         text: currentToken,
         type: type,
-      })
+      });
 
-      currentToken = ""
+      currentToken = "";
     }
   }
 
   for (let i = 0; i < code.length; i++) {
-    const char = code[i]
+    const char = code[i];
+
+    if (i + 1 < code.length) {
+      const twoChars = char + code[i + 1];
+      if (TOKEN_TYPES.OPERATOR.includes(twoChars)) {
+        pushCurrentToken();
+        tokens.push({
+          text: twoChars,
+          type: "operator",
+        });
+        i++;
+        continue;
+      }
+    }
 
     if (TOKEN_TYPES.OPERATOR.includes(char) || TOKEN_TYPES.PUNCTUATION.includes(char)) {
-      if (i + 1 < code.length) {
-        const twoChars = char + code[i + 1]
-        if (TOKEN_TYPES.OPERATOR.includes(twoChars)) {
-          pushCurrentToken()
-          tokens.push({
-            text: twoChars,
-            type: "operator",
-          })
-          i++
-          continue
-        }
-      }
-
-      pushCurrentToken()
+      pushCurrentToken();
       tokens.push({
         text: char,
         type: TOKEN_TYPES.OPERATOR.includes(char) ? "operator" : "punctuation",
-      })
-      continue
+      });
+      continue;
     }
 
     if (char === " " || char === "\t" || char === "\n") {
-      pushCurrentToken()
+      pushCurrentToken();
       tokens.push({
         text: char,
         type: "whitespace",
-      })
-      continue
+      });
+      continue;
     }
 
-    currentToken += char
+    currentToken += char;
   }
 
-  pushCurrentToken()
+  pushCurrentToken();
 
-  return tokens
+  return tokens;
 }
 
-initWasm()
-
-setTimeout(setupScrollSync, 1000)
+document.addEventListener("DOMContentLoaded", () => {
+  initWasm();
+  setTimeout(setupScrollSync, 1000);
+});

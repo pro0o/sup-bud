@@ -1,14 +1,14 @@
 :root {
   --terminal-bg: #18181b;
-  --terminal-bg-lighter: #1a1a1a;
-  --terminal-border: #303030;
+  --terminal-bg-lighter: #363636;
+  --terminal-border: #3d3d3d;
   --terminal-text: #f0f0f0;
-  --terminal-green: #8eb4ff; /* Brighter Pinkish Purple */
-  --terminal-amber: #b57aff; /* Brighter Bluish Purple */
-
+  --terminal-green: #8eb4ff; 
+  --terminal-amber: #a4dbff; 
   --terminal-header: #222;
   --terminal-font: "Courier New", monospace;
   --body-bg: #09090b;
+  --bg:#ffff;
   --button-hover-bg: var(--terminal-green);
   --button-hover-text: #000;
   
@@ -30,52 +30,43 @@
 
 body {
   cursor: help;
-  background-color: var(--body-bg);
+  background: var(--bg);
   color: var(--terminal-text);
   line-height: 1.5;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
   overflow-x: hidden;
   transition: background-color 0.3s ease;
 }
+
 .app-header {
   display: flex;
   align-items: left;
-  justify-content: left; /* Centers the logo horizontally */
+  justify-content: left; 
   padding: 1rem;
   width: 100%;
 }
 
 .logo-container {
   display: flex;
-  align-items: center;
+  align-items: left;
+  justify-content: center;
   text-decoration: none;
 }
 
 .header-logo {
-  width: 250px;
+  width: 150px;
   height: auto;
 }
 
-.logo-text {
-  margin-left: 16px;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--terminal-green);
-}
-
-
 .terminal-container {
-  width: 800px;
-  height: 500px;
+  width: 900px;
+  height: 600px;
   background-color: var(--terminal-bg);
-  border-radius: 16px;
   border: 8px solid var(--terminal-border);
-  box-shadow: 0 4px 16px rgba(52, 52, 52, 0.35);
-
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -109,7 +100,6 @@ body {
   }
 }
 
-/* Terminal Content Layout */
 .terminal-content {
   flex-grow: 1;
   overflow: hidden;
@@ -124,22 +114,37 @@ body {
   }
 }
 
-/* Editor and Output Containers */
 .editor-container,
 .output-container {
   padding: 10px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
-/* Headers */
 .editor-header,
 .output-header {
   margin-bottom: 10px;
   font-size: 14px;
   font-weight: 500;
   transition: color 0.3s ease;
+}
+
+.output-gif-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+  background-color: var(--body-bg);
+  border: 2px solid var(--terminal-border);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.output-gif {
+  max-width: 200px;
+  height: auto;
+  border-radius: 4px;
 }
 
 .prompt {
@@ -156,8 +161,6 @@ textarea,
   padding: 10px;
   font-size: 14px;
   min-height: 150px;
-  border: none;
-  border-radius: 4px;
   font-family: var(--terminal-font);
   line-height: 1.5;
   tab-size: 4;
@@ -179,6 +182,8 @@ textarea {
   background: transparent;
   caret-color: white; 
   z-index: 2;
+  border: 2px solid var(--terminal-border);
+  border-radius: 4px;
 }
 
 .terminal-output {
@@ -210,8 +215,6 @@ textarea {
 .editor-wrapper {
   position: relative;
   flex-grow: 1;
-  border: 2px solid var(--terminal-border);
-  border-radius: 4px;
   background-color: var(--body-bg);
 }
 
@@ -246,7 +249,6 @@ textarea {
   flex-wrap: wrap;
   gap: 8px;
   margin: 10px 0;
-  font-weight: 600;
 }
 
 .snippet-button {
@@ -259,17 +261,17 @@ textarea {
   flex: 1;
   min-width: 80px;
   text-align: center;
-  border-radius: 4px;
   transition: all 0.2s ease;
-  border: none;
+  border: 2px solid var(--terminal-border);
+  border-radius: 4px;
 }
 
 .snippet-button:hover {
-  background-color: var(--terminal-amber);
+  background-color: var(--terminal-green);
+  border: 2px solid var(--terminal-green);
   color: black;
 }
 
-/* Buttons */
 .button-container {
   display: flex;
   gap: 10px;
@@ -279,14 +281,14 @@ textarea {
 .terminal-button-action {
   background-color: var(--terminal-bg-lighter);
   color: var(--terminal-text);
-  border-radius: 4px;
-  border: 2px solid var(--terminal-border);
   padding: 8px 15px;
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   transition: all 0.2s ease;
+  border: 2px solid var(--terminal-border);
+  border-radius: 4px;
 }
 
 .terminal-button-action:hover:not(:disabled) {
@@ -306,11 +308,10 @@ textarea {
 .shortcut-hint {
   font-size: 12px;
   color: #666;
-  margin-top: 5px;
+  margin-top: 4px;
   text-align: right;
 }
 
-/* Loading Screen */
 .loading {
   position: fixed;
   top: 0;
@@ -326,7 +327,6 @@ textarea {
 
 .loading-content {
   background-color: var(--terminal-bg);
-  border-radius: 8px;
   width: 80%;
   max-width: 500px;
   overflow: hidden;
@@ -341,7 +341,6 @@ textarea {
 
 .error-message {
   background-color: rgba(255, 0, 0, 0.2);
-  border: 1px solid red;
   color: red;
   padding: 10px;
   margin-bottom: 10px;
@@ -360,7 +359,7 @@ textarea {
   padding: 20px 15px;
   width: 100%;
   display: flex;
-  justify-content: left;
+  justify-content: right;
   align-items: center;
 }
 
@@ -370,6 +369,7 @@ textarea {
   justify-content: left;
   align-items: left;
 }
+
 .footer-links a {
   color: var(--terminal-amber);
   text-decoration: none;
@@ -378,18 +378,16 @@ textarea {
   display: flex;
   align-items: center;
   gap: 5px;
-  border-radius: 4px;
 }
 
 .footer-links a:hover {
-  color: white; /* Change text color */
-  background-color: var(--terminal-green); /* Highlight background */
+  color: white;
+  background-color: var(--terminal-green); 
   text-decoration: none;
   color: #18181b;
-  box-shadow: 0 0 0px var(--terminal-green); /* Optional glow effect */
+  box-shadow: 0 0 0px var(--terminal-green);
 }
 
-/* Responsive Footer */
 @media (max-width: 768px) {
   .footer-links {
     flex-direction: column;
@@ -401,3 +399,30 @@ textarea {
   }
 }
 
+.corner-image {
+  position: fixed;
+  bottom: 2px;
+  left: 40px;
+  z-index: 100;
+}
+
+.corner-image img {
+  width:300px; 
+  height: auto;
+}
+
+
+@media (max-width: 768px) {
+  .corner-image {
+    max-width: 200px;
+    bottom: 0;
+    left: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .corner-image {
+    max-width: 150px;
+    opacity: 0.8;
+  }
+}

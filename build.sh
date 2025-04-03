@@ -5,7 +5,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-echo -e "${YELLOW}==== Olaf Interpreter - Build Script ====${NC}"
+echo -e "${YELLOW}==== sup-bud - Build Script ====${NC}"
 
 if ! command -v go &> /dev/null; then
     echo -e "${RED}Error: Go is not installed. Please install Go first.${NC}"
@@ -36,7 +36,7 @@ echo -e "${GREEN}Building development server...${NC}"
 go build -o sup-bud-server server.go
 
 echo -e "${YELLOW}==== Build Complete ====${NC}"
-echo -e "To start the server, run: ${GREEN}./web/sup-bud-server${NC}"
+echo -e "To start the server, run: ${GREEN}./sup-bud-server${NC}"
 echo -e "Then open ${GREEN}http://localhost:8080${NC} in your browser"
 
 ./sup-bud-server
