@@ -1,0 +1,43 @@
+# Ignore the Dockerfile itself
+Dockerfile
+.dockerignore
+
+# Binaries and build artifacts
+sup-bud-server
+server
+*.wasm
+
+# Ignore wasm_exec.js
+web/js/wasm_exec.js
+
+# Ignore sup-bud-server binary
+sup-bud-server
+
+# Temporary files
+*.tmp
+*.log
+*.out
+
+# Directories to ignore
+/build
+/node_modules
+/test
+/tests
+/tmp
+/vendor
+
+# Go-specific caches and packages
+/.git
+/.idea
+*.swp
+*.swo
+*.DS_Store
+
+# Compiled object files
+*.o
+*.a
+*.so
+
+# Editor and IDE files
+.vscode/
+*.iml

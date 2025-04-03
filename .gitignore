@@ -1,0 +1,43 @@
+# Go-specific
+*.exe
+*.test
+*.out
+*.o
+*.a
+*.so
+*.dSYM
+
+# Go module cache
+/vendor/
+**/vendor/
+
+# Build output directories
+/build/
+bin/
+obj/
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+*.iml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Ignore .wasm files
+*.wasm
+
+# Ignore wasm_exec.js
+web/js/wasm_exec.js
+
+# Ignore sup-bud-server binary
+sup-bud-server
