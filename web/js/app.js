@@ -7,10 +7,7 @@ async function initWasm() {
   const loadingElement = document.getElementById("loading");
   const errorMessageElement = document.getElementById("error-message");
   const errorTextElement = document.getElementById("error-text");
-  const runButton = document.getElementById("run-button");
-  const clearButton = document.getElementById("clear-button");
   const codeInput = document.getElementById("code-input");
-  const wasmStatusElement = document.getElementById("wasm-status");
 
   try {
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -31,9 +28,6 @@ async function initWasm() {
     }
 
     wasmLoaded = true;
-    runButton.disabled = false;
-    clearButton.disabled = false;
-
     initComponents();
 
     loadingElement.style.opacity = "0";
@@ -51,11 +45,6 @@ async function initWasm() {
     errorTextElement.textContent = "Failed to load the interpreter. Please check the console for details.";
     errorMessageElement.classList.remove("hidden");
     errorMessageElement.classList.add("visible");
-
-    if (wasmStatusElement) {
-      wasmStatusElement.textContent = "Error";
-      wasmStatusElement.style.color = "var(--terminal-red)";
-    }
 
     loadingElement.classList.add("hidden");
   }
@@ -105,21 +94,38 @@ function setupScrollSync() {
     highlightDiv.scrollLeft = textarea.scrollLeft;
   }
 }
-
 function initComponents() {
-  const runButton = document.getElementById("run-button");
-  const clearButton = document.getElementById("clear-button");
   const codeInput = document.getElementById("code-input");
   const outputElement = document.getElementById("output");
   const snippetButtons = document.querySelectorAll(".code-example");
   const MAX_CODE_LENGTH = 200;
+  const executeShortcut = document.querySelector(".shortcut-hint");
 
   fixTextareaCursor(codeInput);
+
+  executeShortcut.innerHTML = '<span class="clickable-shortcut">CTRL+ENTER</span> to execute | <span class="clickable-shortcut">CTRL+D</span> to clear';
+  
+  executeShortcut.addEventListener("click", (event) => {
+    if (event.target.classList.contains("clickable-shortcut")) {
+      const text = event.target.textContent;
+      
+      if (text === "CTRL+ENTER") {
+        executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH);
+      } else if (text === "CTRL+D") {
+        clearCode(codeInput, outputElement);
+      }
+    }
+  });
 
   codeInput.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
       event.preventDefault();
       executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH);
+    }
+    
+    if ((event.ctrlKey || event.metaKey) && event.key === "d") {
+      event.preventDefault();
+      clearCode(codeInput, outputElement);
     }
   });
 
@@ -129,19 +135,6 @@ function initComponents() {
 
   applySyntaxHighlighting(codeInput);
 
-  runButton.addEventListener("click", () => {
-    executeCode(codeInput.value, outputElement, MAX_CODE_LENGTH);
-  });
-
-  clearButton.addEventListener("click", () => {
-    codeInput.value = "";
-    outputElement.textContent = "// Output cleared";
-    applySyntaxHighlighting(codeInput);
-    setTimeout(() => {
-      codeInput.focus();
-    }, 0);
-  });
-
   snippetButtons.forEach((button) => {
     button.addEventListener("click", () => {
       codeInput.value = button.getAttribute("data-code");
@@ -149,6 +142,14 @@ function initComponents() {
       codeInput.focus();
     });
   });
+}
+function clearCode(codeInput, outputElement) {
+  codeInput.value = "";
+  outputElement.textContent = "// Output cleared";
+  applySyntaxHighlighting(codeInput);
+  setTimeout(() => {
+    codeInput.focus();
+  }, 0);
 }
 
 function fixTextareaCursor(textarea) {

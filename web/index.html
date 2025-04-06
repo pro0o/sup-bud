@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sup' bud?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -23,12 +24,15 @@
     </div>
 
     <div id="app">
+        <footer id="footer" class="footer">
+            <div class="footer-links">
+                <a href="https://github.com/sup-bud" target="_blank">[sup' bud is a toy lang made in GO]</a>
+            </div>
+        </footer>
         <div class="terminal-container">
             <div class="terminal-content">
+                <!-- Left side: Editor (no header) -->
                 <div class="editor-container">
-                    <div class="editor-header">
-                        <span class="prompt">sup@editor:</span>
-                    </div>
                     <div class="editor-wrapper">
                         <div id="syntax-highlight-container" class="syntax-highlight-container"></div>
                         <textarea id="code-input" spellcheck="false">sup x = 10;
@@ -36,12 +40,17 @@ sup y = 15;
 sup add = bud(a, b) { a + b };
 add(x, y);</textarea>
                     </div>
+                </div>
 
+                <!-- Right side: Output, Snippets (no header, no buttons) -->
+                <div class="output-container">
+                    <pre id="output" class="terminal-output">// Output will appear here</pre>
+                    
                     <div class="code-snippets">
                         <button class="snippet-button code-example" data-code="sup x = 10;
 sup y = 15;
 sup add = bud(a, b) { a + b };
-add(x, y);">quick maths</button>
+add(x, y);">[quick maths]</button>
                         <button class="snippet-button code-example" data-code="sup factorial = bud(n) {
  if (n == 0) {
  return 1;
@@ -49,11 +58,11 @@ add(x, y);">quick maths</button>
  return n * factorial(n - 1);
  }
 };
-factorial(5);">fax, my brother</button>
+factorial(5);">[facs, my brother]</button>
                         <button class="snippet-button code-example" data-code="sup a = 5;
 sup b = 10;
 sup c = if (a > b) { a } else { b };
-c;">big IF?</button>
+c;">[big IF?]</button>
                         <button class="snippet-button code-example" data-code="sup fibonacci = bud(n) {
  if (n == 0) {
  return 0;
@@ -65,44 +74,17 @@ c;">big IF?</button>
  }
  }
 };
-fibonacci(10);">fibonacci</button>
+fibonacci(10);">[fibonacci]</button>
                     </div>
 
-                    <div class="button-container">
-                        <button id="run-button" class="terminal-button-action" disabled>
-                            <span class="button-icon">▶</span> Execute
-                        </button>
-                        <button id="clear-button" class="terminal-button-action" disabled>
-                            <span class="button-icon">✕</span> Clear
-                        </button>
-                    </div>
-
-                    <div class="shortcut-hint">CTRL+ENTER to execute</div>
-                </div>
-
-                <div class="output-container">
-                    <div class="output-header">
-                        <span class="prompt">sup@output:</span>
-                    </div>
-                    <pre id="output" class="terminal-output">// Output will appear here</pre>
-                    <div class="output-gif-container">
-                        <img src="https://i.imgur.com/1RsDbpf.gif" alt="sup sup sup" class="output-gif">
-                    </div>
+                    <div class="shortcut-hint">CTRL+ENTER to execute | CTRL+D to clear</div>
                 </div>
             </div>
 
-            <footer id="footer" class="footer">
-                <div class="footer-links">
-                    <a href="https://github.com/sup-bud" target="_blank">[sup' bud is toy lang made in GO]</a>
-                    <a href="https://github.com/pro0o/sup-bud" target="_blank">[know more here]</a>
-                    <a href="https://twitter.com/your-twitter" target="_blank">[my twitter]</a>
-                </div>
-            </footer>
+            
         </div>
-    </div>
-
-    <div class="corner-image">
-        <img src="assets/mascot.png" alt="Mascot character">
+        
+        
     </div>
     <script src="js/wasm_exec.js"></script>
     <script src="js/app.js"></script>
