@@ -4,7 +4,7 @@
 
 ## Intro...
 Well, [sup' bud](https://www.instagram.com/reel/Cz1jWt_uEJu/) is a tiny, intentionally simple programming language I created as part of my compiler design coursework. It’s built around writing an interpreter from scratch using go.</br>
-Try it yourself here: https://sup-bud.onrender.com/ <br/>
+Try it yourself here: https://sup-bud.ddns.net/ <br/>
 There are also a few code snippets to try out, just to get a feel for the language.
 
 ---
