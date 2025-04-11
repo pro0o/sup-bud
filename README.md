@@ -1,11 +1,11 @@
-<a href="https://raft-in-motion.vercel.app">
+<a href="https://sup-bud.onrender.com/">
   <img src="./web/assets/banner.png" alt="sup' bud" />
 </a>
 
 ## Intro...
-The name [sup' bud](https://www.instagram.com/reel/Cz1jWt_uEJu/) means "What's up, buddy?".</br>
-Anyways, [sup' bud](https://www.instagram.com/reel/Cz1jWt_uEJu/) is a tiny, intentionally simple programming language I created as part of my compiler design coursework. It’s built around writing an interpreter from scratch using go.</br>
-Try it yourself here: https://raft-in-motion.vercel.app
+Well, [sup' bud](https://www.instagram.com/reel/Cz1jWt_uEJu/) is a tiny, intentionally simple programming language I created as part of my compiler design coursework. It’s built around writing an interpreter from scratch using go.</br>
+Try it yourself here: https://sup-bud.onrender.com/ <br/>
+There are also a few code snippets to try out, just to get a feel for the language.
 
 ---
 
