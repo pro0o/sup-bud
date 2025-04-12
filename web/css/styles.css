@@ -33,7 +33,70 @@ body {
   justify-content: center;
   align-items: center;
   overflow-x: hidden;
+  position: relative; /* Added for proper positioning of the noise effect */
 }
+
+/* Noise effect */
+body::after {
+  content: "";
+  background-image: url("https://bedes.qui.gg/images/framernoise.png");
+  height: 300%;
+  width: 300%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  animation: fadeInGrain 2s ease forwards, animateGrain 8s steps(10) infinite;
+}
+
+@keyframes fadeInGrain {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.03;
+  }
+}
+
+@keyframes animateGrain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, -20%);
+  }
+  30% {
+    transform: translate(-5%, -10%);
+  }
+  40% {
+    transform: translate(-15%, -20%);
+  }
+  50% {
+    transform: translate(-5%, -10%);
+  }
+  60% {
+    transform: translate(-15%, -20%);
+  }
+  70% {
+    transform: translate(-5%, -10%);
+  }
+  80% {
+    transform: translate(-15%, -20%);
+  }
+  90% {
+    transform: translate(-5%, -10%);
+  }
+  100% {
+    transform: translate(-15%, -20%);
+  }
+}
+
 .terminal-container {
   width: 800px;
   height: 500px;
@@ -42,6 +105,8 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative; /* Ensure proper stacking context */
+  z-index: 1; /* Place above the noise effect */
 }
 
 .terminal-content {
@@ -244,6 +309,35 @@ textarea {
 .footer-links a:hover {
   background-color: var(--terminal-amber);
   color: var(--terminal-bg);
+}
+
+/* Transition effects */
+.transition-wrapper {
+  transition-property: opacity, transform, filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  will-change: opacity, filter;
+}
+
+.page-transtion {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
+.initial-load {
+  opacity: 0;
+  animation: fadeInPage 10s ease-out forwards 3s;
+}
+
+@keyframes fadeInPage {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 800px) {
