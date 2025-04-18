@@ -56,7 +56,7 @@ body::after {
     opacity: 0;
   }
   100% {
-    opacity: 0.015;
+    opacity: 0.01;
   }
 }
 
