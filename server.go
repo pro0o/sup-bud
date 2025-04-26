@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	port := flag.Int("port", 8080, "Port to serve on")
+	port := flag.Int("port", 8000, "Port to serve on")
 	directory := flag.String("dir", "./web", "Directory to serve")
 	flag.Parse()
 
