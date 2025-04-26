@@ -1,1 +1,1 @@
-web: ./sup-bud-server
+web: ./bin/sup-bud
