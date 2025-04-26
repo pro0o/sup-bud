@@ -1,3 +1,6 @@
+//go:build !heroku
+// +build !heroku
+
 package main
 
 import (
