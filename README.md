@@ -2,10 +2,9 @@
   <img src="./web/assets/banner.png" alt="sup-bud" />
 </a>
 
-## Intro...
+## Notes
 Well, [sup-bud](https://www.instagram.com/reel/Cz1jWt_uEJu/) is a tiny, intentionally simple programming language I created as part of my compiler design coursework. It’s built around writing an interpreter from scratch using go.</br>
 Here's playground to try out sup-bud: https://sup-bud.ddns.net/ <br/>
-Also check the code snippets there, get the feel; the vibe of the language.
 
 ---
 
@@ -20,7 +19,7 @@ docker run -p 8080:8080 sup-bud
 ./build.sh
 ```
 
-## Resources 
+## Credits
 
 Here are few resources I referenced and learned from while building this project — in no particular order:
 
